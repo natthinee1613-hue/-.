@@ -29,27 +29,91 @@ import {
   Building,
   Shield,
   Palette,
-  Sparkles
+  Sparkles,
+  Globe,
+  Radio
 } from 'lucide-react';
 
-const LOCAL_STORAGE_KEY = 'police_directory_officers_v1';
+const LOCAL_STORAGE_KEY = 'police_directory_officers_v3';
 const THEME_STORAGE_KEY = 'police_directory_theme_id_v2';
 
 export default function App() {
   const [officers, setOfficers] = useState<PoliceOfficer[]>(() => {
     try {
+      // Purge old massive stuck cache (52,937 records)
+      localStorage.removeItem('police_directory_officers_v1');
+      localStorage.removeItem('police_directory_officers_v2');
+
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
+      if (saved !== null) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
+          // If stuck cache has the 52,937 records, purge it
+          if (parsed.length >= 1000) {
+            localStorage.removeItem(LOCAL_STORAGE_KEY);
+            return [];
+          }
           return parsed;
         }
       }
     } catch (e) {
       console.error('Failed to parse saved officers from localStorage', e);
     }
-    return INITIAL_PERSONNEL;
+    // Default to clean 0 rates as requested
+    return [];
   });
+
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [lastPublishedAt, setLastPublishedAt] = useState<string | null>(null);
+
+  // Sync with live published roster from server on load
+  useEffect(() => {
+    const fetchPublishedRoster = async () => {
+      try {
+        const res = await fetch('/api/officers');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data)) {
+            setOfficers(json.data);
+            try {
+              localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(json.data));
+            } catch (e) {}
+            setLastPublishedAt(new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
+          }
+        }
+      } catch (err) {
+        console.log('Roster live sync:', err);
+      }
+    };
+    fetchPublishedRoster();
+  }, []);
+
+  // Helper function to persist & publish roster live to server
+  const publishToLiveServer = async (rosterToPublish: PoliceOfficer[], notify = false) => {
+    try {
+      setIsPublishing(true);
+      const res = await fetch('/api/officers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          officers: rosterToPublish,
+          publishedBy: 'ผู้ดูแลระบบ สกพ.',
+        }),
+      });
+      if (res.ok) {
+        setLastPublishedAt(new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
+        if (rosterToPublish.length === 0) {
+          showToast(`🟢 อัปเดตและเผยแพร่สถานะระบบว่างเปล่า (0 อัตรา) ลงเว็บไซต์เรียบร้อย`);
+        } else {
+          showToast(`🟢 เผยแพร่ข้อมูลล่าสุด ${rosterToPublish.length} อัตรา ลงเว็บไซต์เรียบร้อยแล้ว`);
+        }
+      }
+    } catch (e) {
+      console.warn('Publish to live server failed:', e);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   // Active Theme Selection (Default: police-pastel)
   const [themeId, setThemeId] = useState<string>(() => {
@@ -75,8 +139,31 @@ export default function App() {
   const [selectedOfficerForEdit, setSelectedOfficerForEdit] = useState<PoliceOfficer | null>(null);
 
   const [isImportExportOpen, setIsImportExportOpen] = useState(false);
+  const [importExportInitialTab, setImportExportInitialTab] = useState<'export' | 'upload' | 'paste' | 'clear' | 'reset'>('export');
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   const [selectedOfficerForView, setSelectedOfficerForView] = useState<PoliceOfficer | null>(null);
+
+  const handleOpenImportExport = (tab: 'export' | 'upload' | 'paste' | 'clear' | 'reset' = 'export') => {
+    setImportExportInitialTab(tab);
+    setIsImportExportOpen(true);
+  };
+
+  const handleClearAllOfficers = async () => {
+    try {
+      setIsPublishing(true);
+      await fetch('/api/officers/clear', { method: 'POST' });
+    } catch (e) {
+      console.warn('Clear server error:', e);
+    } finally {
+      setIsPublishing(false);
+    }
+    setOfficers([]);
+    try {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]));
+    } catch (e) {}
+    setLastPublishedAt(new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
+    showToast('ลบอัตราข้อมูลทั้งหมดในระบบเรียบร้อยแล้ว (0 อัตรา)');
+  };
 
   // Toast feedback state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -104,19 +191,21 @@ export default function App() {
     } catch (e) {}
   }, [themeId]);
 
-  // CRUD Operations
+  // CRUD Operations with Auto-Live Publish to Website
   const handleSaveOfficer = (officer: PoliceOfficer) => {
     setOfficers((prev) => {
       const existsIndex = prev.findIndex((o) => o.id === officer.id);
+      let updated: PoliceOfficer[];
       if (existsIndex >= 0) {
-        const updated = [...prev];
+        updated = [...prev];
         updated[existsIndex] = officer;
         showToast(`บันทึกการแก้ไขตำแหน่งเลขที่ ${officer.positionNumber} สำเร็จ`);
-        return updated;
       } else {
         showToast(`เพิ่มข้อมูลกำลังพล ${officer.positionNumber} เรียบร้อยแล้ว`);
-        return [officer, ...prev];
+        updated = [officer, ...prev];
       }
+      publishToLiveServer(updated);
+      return updated;
     });
   };
 
@@ -128,48 +217,63 @@ export default function App() {
         }) หรือไม่?`
       )
     ) {
-      setOfficers((prev) => prev.filter((o) => o.id !== officer.id));
+      setOfficers((prev) => {
+        const updated = prev.filter((o) => o.id !== officer.id);
+        publishToLiveServer(updated);
+        return updated;
+      });
       showToast(`ลบตำแหน่งเลขที่ ${officer.positionNumber} เรียบร้อยแล้ว`);
     }
   };
 
   const handleDeleteMultiple = (ids: string[]) => {
-    setOfficers((prev) => prev.filter((o) => !ids.includes(o.id)));
+    setOfficers((prev) => {
+      const updated = prev.filter((o) => !ids.includes(o.id));
+      publishToLiveServer(updated);
+      return updated;
+    });
     showToast(`ลบข้อมูลกำลังพลที่เลือกจำนวน ${ids.length} รายการเรียบร้อยแล้ว`);
   };
 
   const handleImport = (newOfficers: PoliceOfficer[], mode: 'append' | 'update' | 'replace') => {
+    let updatedList: PoliceOfficer[] = [];
+
     if (mode === 'replace') {
-      setOfficers(newOfficers);
-      showToast(`แทนที่ข้อมูลทำเนียบกำลังพลด้วย ${newOfficers.length} รายการเรียบร้อย`);
+      updatedList = newOfficers;
+      showToast(`แทนที่และเผยแพร่ข้อมูลกำลังพล ${newOfficers.length} อัตรา ล่าสุดสู่เว็บไซต์เรียบร้อย`);
     } else if (mode === 'append') {
-      setOfficers((prev) => [...prev, ...newOfficers]);
-      showToast(`เพิ่มข้อมูลกำลังพลใหม่ ${newOfficers.length} รายการเรียบร้อย`);
+      updatedList = [...officers, ...newOfficers];
+      showToast(`เพิ่มและเผยแพร่ข้อมูลใหม่ ${newOfficers.length} อัตรา สู่เว็บไซต์เรียบร้อย`);
     } else if (mode === 'update') {
-      setOfficers((prev) => {
-        const map = new Map(prev.map((o) => [o.positionNumber, o]));
-        let updatedCount = 0;
-        let addedCount = 0;
+      const map = new Map(officers.map((o) => [o.positionNumber, o]));
+      let updatedCount = 0;
+      let addedCount = 0;
 
-        newOfficers.forEach((o) => {
-          if (map.has(o.positionNumber)) {
-            map.set(o.positionNumber, { ...map.get(o.positionNumber)!, ...o });
-            updatedCount++;
-          } else {
-            map.set(o.positionNumber, o);
-            addedCount++;
-          }
-        });
-
-        showToast(`อัปเดตข้อมูล ${updatedCount} รายการ และเพิ่มใหม่ ${addedCount} รายการ สำเร็จ`);
-        return Array.from(map.values());
+      newOfficers.forEach((o) => {
+        if (map.has(o.positionNumber)) {
+          map.set(o.positionNumber, { ...map.get(o.positionNumber)!, ...o });
+          updatedCount++;
+        } else {
+          map.set(o.positionNumber, o);
+          addedCount++;
+        }
       });
+
+      updatedList = Array.from(map.values());
+      showToast(`อัปเดตข้อมูล ${updatedCount} รายการ และเพิ่มใหม่ ${addedCount} รายการ (เผยแพร่รวม ${updatedList.length} อัตรา)`);
     }
+
+    setOfficers(updatedList);
+    publishToLiveServer(updatedList);
   };
 
-  const handleResetDefault = () => {
-    setOfficers(INITIAL_PERSONNEL);
-    showToast('คืนค่าข้อมูลทำเนียบกำลังพลเริ่มต้นจากเล่มเอกสารราชการสำเร็จ');
+  const handleResetDefault = async () => {
+    try {
+      await fetch('/api/officers/reset', { method: 'POST' });
+    } catch (e) {}
+    setOfficers([]);
+    publishToLiveServer([]);
+    showToast('คืนค่าข้อมูลทำเนียบกำลังพลเริ่มต้นเป็น 0 อัตรา เรียบร้อยแล้ว');
   };
 
   const handleSelectDivisionFromCover = (div: string) => {
@@ -303,14 +407,34 @@ export default function App() {
               </div>
             </button>
 
+            {/* Live Published Status & One-Click Publish Button */}
             <button
-              onClick={() => setIsImportExportOpen(true)}
+              onClick={() => publishToLiveServer(officers)}
+              disabled={isPublishing}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-all cursor-pointer shadow-2xs ${
+                isPublishing
+                  ? 'bg-amber-100 text-amber-800 border-amber-300 animate-pulse'
+                  : currentTheme.isDark
+                  ? 'bg-emerald-950/70 text-emerald-300 border-emerald-800 hover:bg-emerald-900/60'
+                  : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+              }`}
+              title="สถานะข้อมูลบนเว็บไซต์: เผยแพร่แล้ว สามารถกดเพื่อเผยแพร่ข้อมูลกำลังพลล่าสุดลงสู่เว็บไซต์จริงได้ทันที"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block shrink-0" />
+              <Globe className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span className="font-['Chakra_Petch',sans-serif] whitespace-nowrap">
+                {isPublishing ? 'กำลังเผยแพร่...' : `เผยแพร่แล้ว (${officers.length} อัตรา)`}
+              </span>
+            </button>
+
+            <button
+              onClick={() => handleOpenImportExport('export')}
               className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-colors cursor-pointer shadow-2xs ${
                 currentTheme.isDark
                   ? 'text-slate-300 bg-slate-900 hover:bg-slate-800 border-slate-700'
                   : 'text-slate-700 bg-white hover:bg-slate-50 border-slate-300'
               }`}
-              title="อัปโหลด หรือ ดาวน์โหลดไฟล์ Excel / CSV"
+              title="ศูนย์ดาวน์โหลดและอัปเดตข้อมูลกำลังพล (ส่งออก / อัปโหลด / ล้างข้อมูล)"
             >
               <Upload className="w-3.5 h-3.5 text-blue-600" />
               <span>อัปเดต / ส่งออก</span>
@@ -380,10 +504,18 @@ export default function App() {
             ธีม
           </button>
           <button
-            onClick={() => setIsImportExportOpen(true)}
+            onClick={() => handleOpenImportExport('export')}
             className="px-2.5 py-1 rounded-lg whitespace-nowrap text-blue-600 font-bold"
           >
             อัปเดต/ส่งออก
+          </button>
+          <button
+            onClick={() => publishToLiveServer(officers)}
+            disabled={isPublishing}
+            className="px-2.5 py-1 rounded-lg whitespace-nowrap text-emerald-600 font-bold flex items-center gap-1"
+          >
+            <Globe className="w-3 h-3" />
+            {isPublishing ? 'เผยแพร่...' : `เผยแพร่ (${officers.length})`}
           </button>
         </div>
       </header>
@@ -445,7 +577,7 @@ export default function App() {
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setIsImportExportOpen(true)}
+                  onClick={() => handleOpenImportExport('export')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-colors cursor-pointer shadow-2xs ${
                     currentTheme.isDark
                       ? 'text-slate-300 bg-slate-900 hover:bg-slate-800 border-slate-700'
@@ -472,7 +604,8 @@ export default function App() {
               }}
               onDeleteOfficer={handleDeleteOfficer}
               onDeleteMultiple={handleDeleteMultiple}
-              onOpenImportExport={() => setIsImportExportOpen(true)}
+              onOpenImportExport={(tab) => handleOpenImportExport(tab || 'export')}
+              onClearAllOfficers={handleClearAllOfficers}
               onViewOfficer={(officer) => setSelectedOfficerForView(officer)}
               initialDivisionFilter={divisionFilter}
               initialSubDivisionFilter={subDivisionFilter}
@@ -526,6 +659,8 @@ export default function App() {
         officers={officers}
         onImport={handleImport}
         onResetDefault={handleResetDefault}
+        onClearAllOfficers={handleClearAllOfficers}
+        initialTab={importExportInitialTab}
       />
 
       <ThemeSelectorModal

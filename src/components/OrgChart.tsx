@@ -85,8 +85,10 @@ export const OrgChart: React.FC<OrgChartProps> = ({
 
   const commander = officers.find((o) => o.positionLevel === 'ผบช.');
   const deputies = officers.filter((o) => o.positionLevel === 'รอง ผบช.');
+  const cmdOfficeOfficers = officers.filter((o) => o.division === 'สกพ.' && o.subDivision === 'สกพ.');
+  const cmdOfficeCount = cmdOfficeOfficers.length;
 
-  // Complete official divisions & sub-divisions structure (covering 100% of all 117 positions)
+  // Complete official divisions & sub-divisions structure (covering all positions)
   const orgStructure = [
     {
       id: 'สกพ.' as const,
@@ -401,7 +403,7 @@ export const OrgChart: React.FC<OrgChartProps> = ({
             }`}
           >
             <Users className="w-3 h-3" />
-            <span>ดูทำเนียบสำนักงานผู้บังคับบัญชา สกพ. (๗ อัตรา)</span>
+            <span>ดูทำเนียบสำนักงานผู้บังคับบัญชา สกพ. ({cmdOfficeCount} อัตรา)</span>
             <ExternalLink className="w-2.5 h-2.5" />
           </button>
         </div>
@@ -413,12 +415,12 @@ export const OrgChart: React.FC<OrgChartProps> = ({
           <div className="w-0.5 h-5 bg-amber-500/50" />
         </div>
 
-        {/* Level 2: Deputy Commanders (รอง ผบช.สกพ. ๓ ท่าน) */}
+        {/* Level 2: Deputy Commanders (รอง ผบช.สกพ. {deputies.length} ท่าน) */}
         <div
           className={`p-3.5 rounded-2xl border shadow-2xs ${currentTheme.orgChart.deputiesBg} ${currentTheme.orgChart.deputiesBorder}`}
         >
           <div className={`text-[11px] font-bold uppercase tracking-wider mb-2 ${currentTheme.orgChart.deputiesText}`}>
-            รองผู้บัญชาการ สำนักงานกำลังพล (รอง ผบช.สกพ. ๓ ท่าน)
+            รองผู้บัญชาการ สำนักงานกำลังพล (รอง ผบช.สกพ. {deputies.length} ท่าน)
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
             {deputies.map((dep, idx) => (
@@ -448,19 +450,44 @@ export const OrgChart: React.FC<OrgChartProps> = ({
           </div>
         </div>
 
-        {/* Trunk down to 4 divisions */}
+        {/* Trunk down to divisions */}
         <div className="w-0.5 h-8 bg-slate-300 dark:bg-slate-700 mx-auto" />
       </div>
 
-      {/* Level 3: 4 Main Divisions in Theme Palettes */}
+      {/* Level 3: Main Divisions in Theme Palettes */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-        {orgStructure.map((branch) => {
+        {(() => {
+          const knownDivIds = new Set(orgStructure.map((s) => s.id as string));
+          const dynamicDivisions = Array.from(
+            new Set(officers.map((o) => o.division).filter((div) => div && !knownDivIds.has(div)))
+          ).map((customDiv) => {
+            const customDivOfficers = officers.filter((o) => o.division === customDiv);
+            const distinctSubs = Array.from(new Set(customDivOfficers.map((o) => o.subDivision))).map((sub) => ({
+              name: sub,
+              label: sub,
+              desc: `หน่วยงานในสังกัด ${customDiv}`,
+            }));
+            return {
+              id: customDiv as any,
+              name: customDiv,
+              shortName: customDiv.replace(' สกพ.', ''),
+              code: customDiv.slice(0, 4),
+              icon: Building2,
+              commander: customDivOfficers.find((o) => o.positionLevel === 'ผบก.' || o.positionLevel === 'ผกก.'),
+              subDivisions: distinctSubs,
+            };
+          });
+
+          return [...orgStructure, ...dynamicDivisions];
+        })().map((branch) => {
           const isExpanded = expandedDivisions.includes(branch.id);
           const totalInBranch = officers.filter((o) => o.division === branch.id).length;
           const occupiedInBranch = officers.filter((o) => o.division === branch.id && !o.isVacant).length;
           const vacantInBranch = totalInBranch - occupiedInBranch;
           const BranchIcon = branch.icon;
-          const divTheme = currentTheme.orgChart.divisions[branch.id];
+          const divTheme =
+            currentTheme.orgChart.divisions[branch.id as keyof typeof currentTheme.orgChart.divisions] ||
+            currentTheme.orgChart.divisions['สกพ.'];
 
           // Auto-discover any extra sub-divisions if user added or imported customized data
           const knownSubNames = new Set(branch.subDivisions.map((s) => s.name));

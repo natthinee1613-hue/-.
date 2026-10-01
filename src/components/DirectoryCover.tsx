@@ -35,6 +35,11 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
   const commissionedCount = officers.filter((o) => o.commissionType === 'สัญญาบัตร').length;
   const nonCommissionedCount = officers.filter((o) => o.commissionType === 'ประทวน').length;
 
+  const skpCount = officers.filter((o) => o.division === 'สกพ.').length;
+  const otCount = officers.filter((o) => o.division === 'กองอัตรากำลัง สกพ.').length;
+  const tpCount = officers.filter((o) => o.division === 'กองทะเบียนพล สกพ.').length;
+  const skCount = officers.filter((o) => o.division === 'กองสวัสดิการ สกพ.').length;
+
   const handlePrintCover = () => {
     window.print();
   };
@@ -330,8 +335,9 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#0284C7] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#0284C7] transition-colors">
-            ส่วนอำนวยการ สกพ. & กอ.รมน.
+          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#0284C7] transition-colors flex items-center justify-between">
+            <span>ส่วนอำนวยการ สกพ. & กอ.รมน.</span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">{skpCount} อัตรา</span>
           </h3>
           <p className="text-xs text-slate-500">
             สำนักงานผู้บังคับบัญชา, ฝ่ายอำนวยการ สกพ., ปฏิบัติงาน กอ.รมน.
@@ -352,8 +358,9 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#059669] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#059669] transition-colors">
-            กองอัตรากำลัง (อต.)
+          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#059669] transition-colors flex items-center justify-between">
+            <span>กองอัตรากำลัง (อต.)</span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">{otCount} อัตรา</span>
           </h3>
           <p className="text-xs text-slate-500">
             ฝ่ายวิเคราะห์ตำแหน่ง, ควบคุมอัตรากำลัง, มาตรฐานตำแหน่ง
@@ -374,8 +381,9 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#4F46E5] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#4F46E5] transition-colors">
-            กองทะเบียนพล (ทพ.)
+          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#4F46E5] transition-colors flex items-center justify-between">
+            <span>กองทะเบียนพล (ทพ.)</span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">{tpCount} อัตรา</span>
           </h3>
           <p className="text-xs text-slate-500">
             ฝ่ายประวัติบุคคล, แต่งตั้ง, บรรจุ, ความชอบ, ประเมินบุคคล
@@ -396,8 +404,9 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
             </div>
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#DB2777] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#DB2777] transition-colors">
-            กองสวัสดิการ (สก.)
+          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#DB2777] transition-colors flex items-center justify-between">
+            <span>กองสวัสดิการ (สก.)</span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-pink-100 text-pink-800">{skCount} อัตรา</span>
           </h3>
           <p className="text-xs text-slate-500">
             ฝ่ายดนตรี, การเงิน, บ้านพัก, ฌาปนกิจ, สโมสร, กีฬา, อนุศาสนาจารย์

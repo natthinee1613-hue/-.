@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PoliceOfficer, CommissionType, GenderType } from '../types/personnel';
 import * as XLSX from 'xlsx';
 import {
@@ -12,7 +12,10 @@ import {
   AlertTriangle,
   RotateCcw,
   Clipboard,
-  ArrowRight
+  ArrowRight,
+  Trash2,
+  ShieldAlert,
+  Sparkles,
 } from 'lucide-react';
 
 interface ImportExportModalProps {
@@ -21,6 +24,8 @@ interface ImportExportModalProps {
   officers: PoliceOfficer[];
   onImport: (newOfficers: PoliceOfficer[], mode: 'append' | 'update' | 'replace') => void;
   onResetDefault: () => void;
+  onClearAllOfficers?: () => void;
+  initialTab?: 'export' | 'upload' | 'paste' | 'clear' | 'reset';
 }
 
 export const ImportExportModal: React.FC<ImportExportModalProps> = ({
@@ -29,13 +34,23 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
   officers,
   onImport,
   onResetDefault,
+  onClearAllOfficers,
+  initialTab = 'export',
 }) => {
-  const [activeTab, setActiveTab] = useState<'export' | 'upload' | 'paste' | 'reset'>('export');
+  const [activeTab, setActiveTab] = useState<'export' | 'upload' | 'paste' | 'clear' | 'reset'>(initialTab);
   const [uploadMode, setUploadMode] = useState<'update' | 'append' | 'replace'>('update');
   const [parsedPreview, setParsedPreview] = useState<PoliceOfficer[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
   const [pasteContent, setPasteContent] = useState('');
+  const [confirmWipe, setConfirmWipe] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+      setConfirmWipe(false);
+    }
+  }, [isOpen, initialTab]);
 
   if (!isOpen) return null;
 
@@ -332,11 +347,16 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
               <FileSpreadsheet className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-slate-100 font-['Chakra_Petch',sans-serif]">
-                ศูนย์ดาวน์โหลดและอัปเดตข้อมูลกำลังพล
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-semibold text-slate-100 font-['Chakra_Petch',sans-serif]">
+                  ศูนย์ดาวน์โหลดและอัปเดตข้อมูลกำลังพล
+                </h3>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-amber-300 border border-slate-700">
+                  {officers.length} อัตราในระบบ
+                </span>
+              </div>
               <p className="text-xs text-slate-400">
-                ส่งออก (Export) และนำเข้า (Import) ข้อมูล Excel, CSV หรือ JSON
+                จัดการฐานข้อมูล: ส่งออก (Export), อัปโหลดไฟล์ (Import), ลบอัตราข้อมูลทั้งหมดในระบบ และคืนค่าเริ่มต้น
               </p>
             </div>
           </div>
@@ -349,50 +369,61 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center border-b border-slate-800 bg-slate-950/40 px-6 gap-2 text-xs">
+        <div className="flex items-center border-b border-slate-800 bg-slate-950/40 px-4 sm:px-6 gap-1.5 sm:gap-2 text-xs overflow-x-auto">
           <button
             onClick={() => setActiveTab('export')}
-            className={`py-3 px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+            className={`py-3 px-2.5 sm:px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'export'
                 ? 'border-amber-400 text-amber-300 font-semibold'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <Download className="w-3.5 h-3.5" />
-            ดาวน์โหลดข้อมูล (Export)
+            ดาวน์โหลด (Export)
           </button>
           <button
             onClick={() => setActiveTab('upload')}
-            className={`py-3 px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+            className={`py-3 px-2.5 sm:px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'upload'
                 ? 'border-amber-400 text-amber-300 font-semibold'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <Upload className="w-3.5 h-3.5" />
-            อัปโหลดไฟล์ (Excel / CSV)
+            อัปโหลดไฟล์ (Import)
           </button>
           <button
             onClick={() => setActiveTab('paste')}
-            className={`py-3 px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+            className={`py-3 px-2.5 sm:px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'paste'
                 ? 'border-amber-400 text-amber-300 font-semibold'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <Clipboard className="w-3.5 h-3.5" />
-            วางข้อความจากตาราง
+            วางข้อความ
+          </button>
+          <button
+            onClick={() => setActiveTab('clear')}
+            className={`py-3 px-2.5 sm:px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ml-auto ${
+              activeTab === 'clear'
+                ? 'border-rose-500 text-rose-300 font-bold bg-rose-950/30'
+                : 'border-transparent text-rose-400 hover:text-rose-200'
+            }`}
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+            ลบอัตราข้อมูลทั้งหมด
           </button>
           <button
             onClick={() => setActiveTab('reset')}
-            className={`py-3 px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ml-auto ${
+            className={`py-3 px-2.5 sm:px-3 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
               activeTab === 'reset'
-                ? 'border-rose-400 text-rose-300 font-semibold'
-                : 'border-transparent text-rose-400/80 hover:text-rose-300'
+                ? 'border-amber-400 text-amber-300 font-semibold'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            คืนค่าข้อมูลเริ่มต้น
+            คืนค่าเริ่มต้น (0 อัตรา)
           </button>
         </div>
 
@@ -574,13 +605,20 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                     </div>
                   )}
 
+                  <div className="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                    <span>
+                      ระบบจะอัปเดตจำนวนอัตราทั้งหมดและเผยแพร่ข้อมูลล่าสุดลงสู่เว็บไซต์จริงทันที
+                    </span>
+                  </div>
+
                   <div className="pt-2 flex justify-end">
                     <button
                       onClick={handleConfirmImport}
-                      className="flex items-center gap-2 px-5 py-2 text-xs font-semibold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-lg shadow-md transition-all cursor-pointer"
+                      className="flex items-center gap-2 px-5 py-2 text-xs font-semibold text-slate-950 bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-400 rounded-lg shadow-md transition-all cursor-pointer"
                     >
                       <CheckCircle2 className="w-4 h-4" />
-                      ยืนยันนำเข้าข้อมูล {parsedPreview.length} รายการ
+                      ยืนยันนำเข้าและเผยแพร่ลงเว็บไซต์ทันที ({parsedPreview.length} อัตรา)
                     </button>
                   </div>
                 </div>
@@ -629,9 +667,10 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
                     </span>
                     <button
                       onClick={handleConfirmImport}
-                      className="px-4 py-1.5 text-xs font-semibold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors cursor-pointer"
+                      className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors cursor-pointer"
                     >
-                      ยืนยันบันทึกข้อมูล
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      ยืนยันนำเข้าและเผยแพร่ลงเว็บไซต์ ({parsedPreview.length} อัตรา)
                     </button>
                   </div>
                 </div>
@@ -639,29 +678,175 @@ export const ImportExportModal: React.FC<ImportExportModalProps> = ({
             </div>
           )}
 
-          {/* TAB 4: RESET DEFAULT */}
+          {/* TAB 4: ลบอัตราข้อมูลทั้งหมดในระบบ */}
+          {activeTab === 'clear' && (
+            <div className="space-y-5">
+              <div className="p-5 rounded-2xl bg-rose-950/40 border border-rose-800/80 space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-rose-900/60 border border-rose-700 text-rose-300 flex items-center justify-center shrink-0">
+                    <Trash2 className="w-5 h-5 text-rose-400" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-base font-bold text-rose-200 font-['Chakra_Petch',sans-serif]">
+                        ฟังก์ชันลบอัตราข้อมูลทั้งหมดในระบบ (ล้างข้อมูล 0 อัตรา)
+                      </h4>
+                      <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-rose-900/80 text-rose-300 border border-rose-700/80 font-bold">
+                        DANGER ZONE
+                      </span>
+                    </div>
+                    <p className="text-xs text-rose-300/90 mt-1 leading-relaxed">
+                      คำเตือน: การลบอัตราข้อมูลทั้งหมดจะทำการล้างข้อมูลกำลังพลทั้งหมดออกจากระบบทันที ({officers.length} อัตรา ให้กลายเป็น 0 อัตรา) เพื่อรองรับการนำเข้าโครงสร้างหรือไฟล์อัตรากำลังพลชุดใหม่ การกระทำนี้จะมีผลต่อตารางทำเนียบ แผนผังโครงสร้าง และการเผยแพร่หน้าเว็บไซต์ทันที
+                    </p>
+                  </div>
+                </div>
+
+                {/* Status card */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-center">
+                    <div className="text-[11px] text-slate-400">อัตราปัจจุบันในระบบ</div>
+                    <div className="text-lg font-bold text-rose-400 font-mono mt-0.5">
+                      {officers.length} <span className="text-xs font-normal">อัตรา</span>
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-center">
+                    <div className="text-[11px] text-slate-400">สัญญาบัตร</div>
+                    <div className="text-lg font-bold text-amber-400 font-mono mt-0.5">
+                      {officers.filter((o) => o.commissionType === 'สัญญาบัตร').length} <span className="text-xs font-normal">อัตรา</span>
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-center">
+                    <div className="text-[11px] text-slate-400">ประทวน</div>
+                    <div className="text-lg font-bold text-blue-400 font-mono mt-0.5">
+                      {officers.filter((o) => o.commissionType === 'ประทวน').length} <span className="text-xs font-normal">อัตรา</span>
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 text-center">
+                    <div className="text-[11px] text-slate-400">ตำแหน่งว่าง</div>
+                    <div className="text-lg font-bold text-emerald-400 font-mono mt-0.5">
+                      {officers.filter((o) => o.isVacant).length} <span className="text-xs font-normal">อัตรา</span>
+                    </div>
+                  </div>
+                </div>
+
+                {officers.length > 0 ? (
+                  <div className="space-y-4 pt-2">
+                    {/* Backup recommendation */}
+                    <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="text-xs text-slate-300">
+                        <span className="font-semibold text-amber-400">💡 คำแนะนำเพื่อความปลอดภัย:</span> ท่านสามารถดาวน์โหลดไฟล์สำรองข้อมูล Excel เก็บไว้ก่อนล้างระบบได้ทันที
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleExportExcel}
+                        className="flex items-center justify-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-emerald-300 bg-emerald-950/70 hover:bg-emerald-900/70 border border-emerald-700/60 rounded-lg transition-colors cursor-pointer shrink-0"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        ดาวน์โหลดสำรอง Excel ทันที
+                      </button>
+                    </div>
+
+                    {/* Double confirmation checkbox */}
+                    <label className="flex items-start gap-2.5 p-3 rounded-xl bg-rose-950/60 border border-rose-900/70 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={confirmWipe}
+                        onChange={(e) => setConfirmWipe(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 accent-rose-500 rounded cursor-pointer shrink-0"
+                      />
+                      <span className="text-xs text-rose-200">
+                        ข้าพเจ้าได้ตรวจสอบและยืนยันความประสงค์ที่จะ <strong>ลบอัตราข้อมูลทั้งหมดในระบบ ({officers.length} อัตรา)</strong> ให้เป็น 0 อัตรา และรับทราบว่าการกระทำนี้จะส่งผลต่อตารางและเว็บไซต์ทันที
+                      </span>
+                    </label>
+
+                    {/* Action button */}
+                    <div className="flex justify-end pt-1">
+                      <button
+                        type="button"
+                        disabled={!confirmWipe}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              `⚠️ ยืนยันครั้งสุดท้าย!\n\nคุณต้องการลบข้อมูลกำลังพลและอัตราตำแหน่งทั้งหมดในระบบจำนวน ${officers.length} อัตรา ให้กลายเป็น 0 อัตรา ใช่หรือไม่?`
+                            )
+                          ) {
+                            if (onClearAllOfficers) {
+                              onClearAllOfficers();
+                            }
+                            onClose();
+                          }
+                        }}
+                        className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold rounded-xl shadow-lg transition-all ${
+                          confirmWipe
+                            ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-950/50 cursor-pointer'
+                            : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed opacity-60'
+                        }`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>ยืนยันลบอัตราข้อมูลทั้งหมดในระบบ ({officers.length} อัตรา)</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-6 rounded-xl bg-slate-900/90 border border-slate-800 text-center space-y-3">
+                    <div className="text-amber-400 font-semibold text-sm flex items-center justify-center gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      ขณะนี้ไม่มีข้อมูลอัตรากำลังพลในระบบ (0 อัตรา)
+                    </div>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto">
+                      ฐานข้อมูลสะอาดหมดจดพร้อมรองรับการอัปโหลดไฟล์อัตรากำลังพลชุดใหม่ หรือสามารถคืนค่าเริ่มต้นได้ทุกเมื่อ
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('upload')}
+                        className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        ไปที่หน้าอัปโหลดไฟล์ (Import)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onResetDefault();
+                          onClose();
+                        }}
+                        className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5 text-amber-400" />
+                        คืนค่าเริ่มต้น (0 อัตรา)
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: RESET DEFAULT */}
           {activeTab === 'reset' && (
-            <div className="p-6 rounded-xl bg-rose-950/30 border border-rose-900/50 space-y-4 text-center">
-              <div className="w-12 h-12 rounded-full bg-rose-900/50 text-rose-400 flex items-center justify-center mx-auto">
+            <div className="p-6 rounded-xl bg-amber-950/20 border border-amber-900/40 space-y-4 text-center">
+              <div className="w-12 h-12 rounded-full bg-amber-900/40 text-amber-400 flex items-center justify-center mx-auto">
                 <RotateCcw className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-semibold text-rose-200">
-                คืนค่าข้อมูลทำเนียบกำลังพลเริ่มต้นจากเอกสารทางการ
+              <h4 className="text-base font-semibold text-amber-200">
+                คืนค่าข้อมูลเริ่มต้นของระบบเป็น 0 อัตรา
               </h4>
               <p className="text-slate-300 max-w-md mx-auto text-xs leading-relaxed">
-                การดำเนินการนี้จะโหลดชุดข้อมูลทำเนียบกำลังพล สกพ. เริ่มต้นกว่า 117+ อัตรา ตามเอกสารบัญชีกำลังพลอย่างเป็นทางการ (สกพ., กองอัตรากำลัง, กองทะเบียนพล, กองสวัสดิการ) กลับคืนมาทั้งหมด
+                การดำเนินการนี้จะรีเซ็ตระบบทำเนียบกำลังพลให้กลับสู่สถานะเริ่มต้นเป็น 0 อัตรา ฐานข้อมูลจะว่างเปล่า สะอาดหมดจด พร้อมสำหรับการนำเข้าหรือจัดทำเนียบกำลังพลชุดใหม่
               </p>
               <div className="pt-2">
                 <button
+                  type="button"
                   onClick={() => {
-                    if (window.confirm('ยืนยันคืนค่าข้อมูลทำเนียบกำลังพลเป็นค่าเริ่มต้นจากเอกสารราชการหรือไม่?')) {
+                    if (window.confirm('ยืนยันคืนค่าข้อมูลทำเนียบกำลังพลเริ่มต้นให้เป็น 0 อัตรา หรือไม่?')) {
                       onResetDefault();
                       onClose();
                     }
                   }}
-                  className="px-5 py-2.5 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 rounded-lg shadow-lg transition-colors cursor-pointer"
+                  className="px-5 py-2.5 text-xs font-semibold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg shadow-lg transition-colors cursor-pointer"
                 >
-                  ยืนยันคืนค่าข้อมูลทำเนียบกำลังพลเริ่มต้น
+                  ยืนยันคืนค่าเริ่มต้น (0 อัตรา)
                 </button>
               </div>
             </div>
