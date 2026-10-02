@@ -51,7 +51,82 @@ export interface AppTheme {
 }
 
 export const THEMES: AppTheme[] = [
-  // 1. พาสเทลราชการตำรวจ (มาตรฐาน)
+  // 1. แบทแมน / ดาร์กไนท์แห่งก็อตแธม (Batman The Dark Knight)
+  {
+    id: 'batman-dark-knight',
+    name: 'แบทแมน อัศวินรัตติกาล (Batman)',
+    englishName: 'Batman / The Dark Knight',
+    description: 'โทนสีดำออนิกซ์ ชาร์โคล คาร์บอนแบล็ค ตัดกับสีเหลือง Bat-Signal และไทเทเนียม สไตล์อัศวินรัตติกาล',
+    isDark: true,
+    swatches: ['#0A0A0C', '#18181F', '#272736', '#FFE500', '#FACC15'],
+    bgApp: 'bg-[#08080B]',
+    textMain: 'text-[#F4F4F5]',
+    textMuted: 'text-[#A1A1AA]',
+    headerBg: 'bg-[#0E0E14]/95',
+    headerBorder: 'border-[#272733]',
+    navActive: 'bg-[#FFE500] text-slate-950 font-black border-[#FFE500] shadow-[0_0_15px_rgba(255,229,0,0.35)]',
+    navInactive: 'text-[#A1A1AA] hover:text-[#FFE500] hover:bg-[#181822]',
+    cardBg: 'bg-[#111117]',
+    cardBorder: 'border-[#262635]',
+    inputBg: 'bg-[#09090D]',
+    inputBorder: 'border-[#2C2C3C] focus:border-[#FFE500]',
+    tableHeaderBg: 'bg-[#15151F]',
+    tableBorder: 'border-[#262635]',
+    tableRowHover: 'hover:bg-[#1B1B26]',
+    vacantRowBg: 'bg-[#FFE500]/5',
+    orgChart: {
+      commander: {
+        bg: 'bg-gradient-to-b from-[#1C1C26] via-[#121219] to-[#0A0A0E]',
+        border: 'border-[#FFE500] shadow-[0_0_30px_rgba(255,229,0,0.3)]',
+        text: 'text-[#FFE500] drop-shadow-[0_2px_12px_rgba(255,229,0,0.4)]',
+        subtext: 'text-[#E4E4E7]',
+        badge: 'bg-[#FFE500] text-black font-black border-[#FFE500]',
+      },
+      deputiesBg: 'bg-gradient-to-r from-[#12121A] via-[#1B1B26] to-[#12121A]',
+      deputiesBorder: 'border-[#36364A]',
+      deputiesText: 'text-[#FFE500]',
+      divisions: {
+        'สกพ.': {
+          bg: 'bg-[#0F0F15]',
+          header: 'bg-gradient-to-r from-[#1C1C28] to-[#12121A]',
+          border: 'border-[#FFE500]/60 hover:border-[#FFE500]',
+          text: 'text-[#FFE500]',
+          badge: 'bg-[#FFE500]/15 text-[#FFE500] border-[#FFE500]/40',
+          subItem: 'bg-[#151520]/90 hover:bg-[#20202E] border-[#2A2A3C] text-[#E4E4E7]',
+          bar: 'from-[#FFE500] to-[#EAB308]',
+        },
+        'กองอัตรากำลัง สกพ.': {
+          bg: 'bg-[#0F0F15]',
+          header: 'bg-gradient-to-r from-[#13221C] to-[#0F0F15]',
+          border: 'border-[#10B981]/60 hover:border-[#10B981]',
+          text: 'text-[#34D399]',
+          badge: 'bg-[#10B981]/15 text-[#34D399] border-[#10B981]/40',
+          subItem: 'bg-[#151520]/90 hover:bg-[#182B22] border-[#2A2A3C] text-[#E4E4E7]',
+          bar: 'from-[#10B981] to-[#059669]',
+        },
+        'กองทะเบียนพล สกพ.': {
+          bg: 'bg-[#0F0F15]',
+          header: 'bg-gradient-to-r from-[#121C2B] to-[#0F0F15]',
+          border: 'border-[#38BDF8]/60 hover:border-[#38BDF8]',
+          text: 'text-[#38BDF8]',
+          badge: 'bg-[#38BDF8]/15 text-[#38BDF8] border-[#38BDF8]/40',
+          subItem: 'bg-[#151520]/90 hover:bg-[#17263A] border-[#2A2A3C] text-[#E4E4E7]',
+          bar: 'from-[#38BDF8] to-[#0284C7]',
+        },
+        'กองสวัสดิการ สกพ.': {
+          bg: 'bg-[#0F0F15]',
+          header: 'bg-gradient-to-r from-[#26131C] to-[#0F0F15]',
+          border: 'border-[#F43F5E]/60 hover:border-[#F43F5E]',
+          text: 'text-[#FB7185]',
+          badge: 'bg-[#F43F5E]/15 text-[#FB7185] border-[#F43F5E]/40',
+          subItem: 'bg-[#151520]/90 hover:bg-[#301622] border-[#2A2A3C] text-[#E4E4E7]',
+          bar: 'from-[#F43F5E] to-[#E11D48]',
+        },
+      },
+    },
+  },
+
+  // 2. พาสเทลราชการตำรวจ (มาตรฐาน)
   {
     id: 'police-pastel',
     name: 'พาสเทลราชการตำรวจ',

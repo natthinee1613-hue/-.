@@ -2,7 +2,26 @@ import React from 'react';
 import { PoliceEmblem } from './PoliceEmblem';
 import { PoliceOfficer } from '../types/personnel';
 import { AppTheme } from '../data/themes';
-import { BookOpen, Printer, Shield, Users, Award, ChevronRight, FileSpreadsheet, Building2, Sparkles } from 'lucide-react';
+import {
+  BookOpen,
+  Printer,
+  Shield,
+  Users,
+  Award,
+  ChevronRight,
+  Building2,
+  Sparkles,
+  FileText,
+  FileSpreadsheet,
+  Network,
+  CheckCircle,
+  ExternalLink,
+  Briefcase,
+  FileCheck,
+  HeartHandshake,
+  Landmark,
+  Scale
+} from 'lucide-react';
 
 interface DirectoryCoverProps {
   officers: PoliceOfficer[];
@@ -21,10 +40,11 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
   isPastelTheme = true,
   currentTheme,
 }) => {
-  // If currentTheme provided, determine pastel vs dark from it
-  const isPastel = currentTheme ? !currentTheme.isDark : isPastelTheme;
+  // Theme check
+  const isDark = currentTheme ? currentTheme.isDark : !isPastelTheme;
+  const isBatman = currentTheme?.id === 'batman-dark-knight';
 
-  // Find key commanders
+  // Find commanders
   const commander = officers.find((o) => o.positionLevel === 'ผบช.');
   const deputyCommanders = officers.filter((o) => o.positionLevel === 'รอง ผบช.');
   const divisionCommanders = officers.filter((o) => o.positionLevel === 'ผบก.');
@@ -35,382 +55,433 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
   const commissionedCount = officers.filter((o) => o.commissionType === 'สัญญาบัตร').length;
   const nonCommissionedCount = officers.filter((o) => o.commissionType === 'ประทวน').length;
 
-  const skpCount = officers.filter((o) => o.division === 'สกพ.').length;
-  const otCount = officers.filter((o) => o.division === 'กองอัตรากำลัง สกพ.').length;
-  const tpCount = officers.filter((o) => o.division === 'กองทะเบียนพล สกพ.').length;
-  const skCount = officers.filter((o) => o.division === 'กองสวัสดิการ สกพ.').length;
+  const skpOfficers = officers.filter((o) => o.division === 'สกพ.');
+  const otOfficers = officers.filter((o) => o.division === 'กองอัตรากำลัง สกพ.');
+  const tpOfficers = officers.filter((o) => o.division === 'กองทะเบียนพล สกพ.');
+  const skOfficers = officers.filter((o) => o.division === 'กองสวัสดิการ สกพ.');
 
   const handlePrintCover = () => {
     window.print();
   };
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* Action Bar for Cover Mode */}
+    <div className="space-y-8 animate-fadeIn pb-12">
+      {/* Top Action & Navigation Bar */}
       <div
-        className={`flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl border shadow-sm print:hidden ${
-          isPastel
-            ? 'bg-white/90 border-[#CBD5E1] text-slate-800'
-            : 'bg-slate-900/80 border-slate-800 text-slate-100'
+        className={`flex flex-wrap items-center justify-between gap-4 p-5 rounded-3xl border shadow-md transition-all print:hidden ${
+          isDark
+            ? 'bg-[#0E0E14]/95 border-[#272736] text-slate-100'
+            : 'bg-white/95 border-slate-200 text-slate-800'
         }`}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-600">
+        <div className="flex items-center gap-3.5">
+          <div
+            className={`w-11 h-11 rounded-2xl flex items-center justify-center shadow-xs border ${
+              isBatman
+                ? 'bg-[#151520] border-[#FFE500]/50 text-[#FFE500]'
+                : isDark
+                ? 'bg-slate-900 border-slate-800 text-amber-400'
+                : 'bg-amber-50 border-amber-200 text-amber-700'
+            }`}
+          >
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h2 className={`text-base font-semibold font-['Chakra_Petch',sans-serif] ${isPastel ? 'text-slate-800' : 'text-slate-100'}`}>
-              หน้าปกเอกสารทำเนียบกำลังพลทางการ
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                  isBatman
+                    ? 'bg-[#FFE500]/15 text-[#FFE500] border-[#FFE500]/40'
+                    : isDark
+                    ? 'bg-amber-950/80 text-amber-300 border-amber-800'
+                    : 'bg-blue-50 text-blue-700 border-blue-200'
+                }`}
+              >
+                เอกสารทางการ สำนักงานตำรวจแห่งชาติ
+              </span>
+            </div>
+            <h2 className={`text-base font-bold font-['Chakra_Petch',sans-serif] mt-0.5 ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+              ปกเอกสารสายบังคับบัญชา สกพ.
             </h2>
-            <p className={`text-xs ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>
-              สำนักงานกำลังพล สำนักงานตำรวจแห่งชาติ (สกพ.) ประจำปีงบประมาณ พ.ศ. ๒๕๖๙
-            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
+            type="button"
             onClick={handlePrintCover}
-            className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
-              isPastel
-                ? 'text-slate-700 bg-white hover:bg-slate-50 border-slate-300'
-                : 'text-slate-200 bg-slate-800 hover:bg-slate-700 border-slate-700'
+            className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl border transition-all cursor-pointer shadow-xs ${
+              isDark
+                ? 'bg-slate-800 hover:bg-slate-750 text-slate-200 border-slate-700'
+                : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-300'
             }`}
           >
             <Printer className="w-4 h-4 text-amber-500" />
-            พิมพ์หน้าปก / เอกสาร
+            <span>พิมพ์หน้าปก (A4)</span>
           </button>
+
           <button
+            type="button"
             onClick={onOpenDirectory}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 rounded-lg shadow-sm transition-all cursor-pointer"
+            className={`flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md ${
+              isBatman
+                ? 'bg-[#FFE500] text-slate-950 hover:bg-[#FACC15] shadow-[0_0_15px_rgba(255,229,0,0.35)]'
+                : isDark
+                ? 'bg-amber-500 text-slate-950 hover:bg-amber-400'
+                : 'bg-gradient-to-r from-blue-700 to-indigo-700 text-white hover:from-blue-800 hover:to-indigo-800'
+            }`}
           >
             <Users className="w-4 h-4" />
-            เปิดดูรายชื่อทั้งหมด ({totalPositions} อัตรา)
+            <span>เข้าสู่ทำเนียบกำลังพล ({totalPositions} อัตรา) &rarr;</span>
           </button>
         </div>
       </div>
 
-      {/* Official Directory Cover Book Page (Formatted for Standard A4 proportions & Print) */}
+      {/* Official Executive Directory Cover Page (Styled for Professional A4 Government Document) */}
       <div
-        className={`relative mx-auto max-w-[850px] rounded-2xl border-4 p-8 md:p-14 shadow-xl overflow-hidden print:p-8 print:border-amber-600 print:shadow-none print:max-w-none ${
-          isPastel
-            ? 'bg-gradient-to-b from-[#FFFDF8] via-[#FAF5EA] to-[#F5EEDD] border-[#D4AF37]/50 text-slate-800'
-            : 'bg-gradient-to-b from-slate-950 via-[#0a1122] to-slate-950 border-amber-500/30 text-slate-100'
+        className={`relative mx-auto max-w-[900px] rounded-3xl border-4 p-8 sm:p-14 md:p-16 shadow-2xl overflow-hidden print:p-8 print:border-amber-600 print:shadow-none print:max-w-none transition-all ${
+          isBatman
+            ? 'bg-gradient-to-b from-[#0F0F16] via-[#0A0A0E] to-[#050508] border-[#FFE500]/60 text-slate-100 shadow-[0_0_50px_rgba(0,0,0,0.8)]'
+            : isDark
+            ? 'bg-gradient-to-b from-slate-950 via-[#0B132B] to-slate-950 border-amber-500/40 text-slate-100 shadow-2xl'
+            : 'bg-gradient-to-b from-[#FFFDF8] via-[#FAF6ED] to-[#F3EBDD] border-[#C59B27] text-slate-900 shadow-xl'
         }`}
       >
-        {/* Subtle Ornamental Thai Gold Border */}
+        {/* Double-Line Government Filigree Gold Border */}
         <div
-          className={`absolute inset-3 border-2 rounded-xl pointer-events-none ${
-            isPastel ? 'border-[#D4AF37]/30' : 'border-amber-500/20'
+          className={`absolute inset-3 sm:inset-4 border-2 rounded-2xl pointer-events-none ${
+            isBatman ? 'border-[#FFE500]/30' : isDark ? 'border-amber-500/25' : 'border-[#C59B27]/40'
           }`}
         />
         <div
-          className={`absolute inset-5 border border-dashed rounded-lg pointer-events-none ${
-            isPastel ? 'border-[#D4AF37]/20' : 'border-amber-500/15'
+          className={`absolute inset-5 sm:inset-7 border border-dashed rounded-xl pointer-events-none ${
+            isBatman ? 'border-[#FFE500]/20' : isDark ? 'border-amber-500/15' : 'border-[#C59B27]/25'
           }`}
         />
 
-        {/* Four Decorative Corner Accents */}
-        <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-amber-500 pointer-events-none" />
-        <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-amber-500 pointer-events-none" />
-        <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-amber-500 pointer-events-none" />
-        <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-amber-500 pointer-events-none" />
+        {/* Four Prestige Gold Corner Ornaments */}
+        <div className={`absolute top-5 left-5 w-10 h-10 border-t-2 border-l-2 pointer-events-none ${isBatman ? 'border-[#FFE500]' : 'border-amber-500'}`} />
+        <div className={`absolute top-5 right-5 w-10 h-10 border-t-2 border-r-2 pointer-events-none ${isBatman ? 'border-[#FFE500]' : 'border-amber-500'}`} />
+        <div className={`absolute bottom-5 left-5 w-10 h-10 border-b-2 border-l-2 pointer-events-none ${isBatman ? 'border-[#FFE500]' : 'border-amber-500'}`} />
+        <div className={`absolute bottom-5 right-5 w-10 h-10 border-b-2 border-r-2 pointer-events-none ${isBatman ? 'border-[#FFE500]' : 'border-amber-500'}`} />
 
-        {/* Background radial glow behind emblem */}
-        <div className="absolute top-28 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Ambient Radial Glow Behind Emblem */}
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[480px] h-[480px] bg-gradient-to-b from-amber-500/10 via-amber-500/5 to-transparent rounded-full blur-3xl pointer-events-none -z-0 animate-pulse" />
 
-        <div className="relative z-10 text-center flex flex-col items-center">
-          {/* Header Institution */}
-          <div className="space-y-1 mb-6">
-            <span
-              className={`text-xs md:text-sm font-bold tracking-widest uppercase font-['Chakra_Petch',sans-serif] ${
-                isPastel ? 'text-[#854D0E]' : 'text-amber-400/90'
-              }`}
-            >
-              ROYAL THAI POLICE HEADQUARTERS
-            </span>
-            <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mt-1" />
+        {/* Official Document Content */}
+        <div className="relative z-10 flex flex-col items-center text-center">
+          {/* Header Institution Classification */}
+          <div className="space-y-1.5 mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-500 text-[11px] font-bold tracking-widest uppercase font-['Chakra_Petch',sans-serif]">
+              <Scale className="w-3.5 h-3.5" />
+              <span>สำนักงานกำลังพล (สกพ.)</span>
+            </div>
+            <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mt-2" />
           </div>
 
-          {/* Golden Police Emblem */}
-          <div className="mb-6 transform hover:scale-105 transition-transform duration-300 drop-shadow-[0_10px_25px_rgba(212,175,55,0.25)]">
-            <PoliceEmblem size={135} />
+          {/* Central Official Golden Police Emblem */}
+          <div className="mb-8 transform hover:scale-105 transition-transform duration-300 drop-shadow-[0_12px_30px_rgba(212,175,55,0.35)]">
+            <PoliceEmblem size={145} />
           </div>
 
-          {/* Main Book Title */}
-          <div className="space-y-3 mb-8">
+          {/* Prestige Official Titles */}
+          <div className="space-y-3 mb-8 max-w-2xl">
             <h1
-              className={`text-3xl md:text-5xl font-bold tracking-tight font-['Chakra_Petch',sans-serif] ${
-                isPastel
-                  ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#1E293B] via-[#0F172A] to-[#1E3A8A]'
-                  : 'text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-300 to-amber-100'
+              className={`text-3xl sm:text-4xl md:text-5xl font-black tracking-tight font-['Chakra_Petch',sans-serif] ${
+                isBatman
+                  ? 'text-[#FFE500] drop-shadow-[0_2px_12px_rgba(255,229,0,0.4)]'
+                  : isDark
+                  ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-300 to-amber-100'
+                  : 'text-[#1E293B] drop-shadow-xs'
               }`}
             >
-              ทำเนียบกำลังพลข้าราชการตำรวจ
+              สายบังคับบัญชา
             </h1>
-            <div className="flex items-center justify-center gap-3">
-              <span className={`h-px w-12 ${isPastel ? 'bg-[#D4AF37]' : 'bg-amber-500/40'}`} />
-              <p
-                className={`text-xl md:text-2xl font-bold font-['Sarabun',sans-serif] ${
-                  isPastel ? 'text-[#854D0E]' : 'text-amber-400'
+
+            <div className="flex items-center justify-center gap-3 pt-1">
+              <span className={`h-0.5 w-14 ${isBatman ? 'bg-[#FFE500]' : 'bg-amber-500'}`} />
+              <h2
+                className={`text-2xl sm:text-3xl font-bold font-['Chakra_Petch',sans-serif] ${
+                  isBatman ? 'text-slate-100' : isDark ? 'text-amber-300' : 'text-[#854D0E]'
                 }`}
               >
-                สำนักงานกำลังพล
-              </p>
-              <span className={`h-px w-12 ${isPastel ? 'bg-[#D4AF37]' : 'bg-amber-500/40'}`} />
+                สำนักงานกำลังพล (สกพ.)
+              </h2>
+              <span className={`h-0.5 w-14 ${isBatman ? 'bg-[#FFE500]' : 'bg-amber-500'}`} />
             </div>
-            <p className={`text-sm md:text-base font-semibold ${isPastel ? 'text-slate-600' : 'text-slate-300'}`}>
+
+            <p className={`text-base sm:text-lg font-semibold tracking-wide ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
               สำนักงานตำรวจแห่งชาติ
             </p>
           </div>
 
-          {/* Year Banner */}
+          {/* Fiscal Year & Document Registry Ribbon */}
           <div
-            className={`inline-flex items-center gap-2 px-6 py-2 rounded-full font-['Chakra_Petch',sans-serif] text-sm md:text-base font-bold mb-10 shadow-sm ${
-              isPastel
-                ? 'bg-[#FEF3C7] border border-[#FCD34D] text-[#78350F]'
-                : 'bg-amber-500/10 border border-amber-500/30 text-amber-300 shadow-inner'
+            className={`inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full font-['Chakra_Petch',sans-serif] text-sm md:text-base font-bold mb-10 shadow-md border ${
+              isBatman
+                ? 'bg-[#FFE500] text-slate-950 border-[#FFE500] shadow-[0_0_20px_rgba(255,229,0,0.3)]'
+                : isDark
+                ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
+                : 'bg-[#FEF3C7] border-[#E5C158] text-[#78350F]'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-amber-500" />
-            <span>ประจำปีงบประมาณ พ.ศ. ๒๕๖๙</span>
+            <Sparkles className="w-4 h-4" />
+            <span>ประจำปีงบประมาณ พ.ศ. ๒๕๖๙ (Fiscal Year 2026)</span>
           </div>
 
-          {/* Commander in Chief Spotlight */}
+          {/* Commander in Chief Executive Showcase */}
           {commander && (
             <div
-              className={`w-full max-w-xl mx-auto mb-10 p-5 rounded-2xl border shadow-md text-center ${
-                isPastel
-                  ? 'bg-gradient-to-b from-white via-[#FFFDF5] to-[#FEF7E6] border-[#E5C158]'
-                  : 'bg-slate-900/90 border-amber-500/30 backdrop-blur-md'
+              className={`w-full max-w-xl mx-auto mb-8 p-6 rounded-3xl border-2 shadow-xl text-center relative overflow-hidden transition-all ${
+                isBatman
+                  ? 'bg-gradient-to-b from-[#1C1C28] via-[#12121A] to-[#0A0A0E] border-[#FFE500]/80 ring-2 ring-[#FFE500]/30'
+                  : isDark
+                  ? 'bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border-amber-400/80 shadow-amber-950/30'
+                  : 'bg-gradient-to-b from-white via-[#FFFDF5] to-[#FEF7E6] border-[#E5C158]'
               }`}
             >
               <div
-                className={`text-xs uppercase tracking-wider font-bold mb-1.5 ${
-                  isPastel ? 'text-[#854D0E]' : 'text-amber-400'
+                className={`text-xs uppercase tracking-widest font-black mb-2 ${
+                  isBatman ? 'text-[#FFE500]' : isDark ? 'text-amber-400' : 'text-[#854D0E]'
                 }`}
               >
-                ผู้บัญชาการ สำนักงานกำลังพล
+                ผู้บัญชาการ สำนักงานกำลังพล (ผบช.สกพ.)
               </div>
               <div
-                className={`text-xl md:text-2xl font-bold ${
-                  isPastel ? 'text-slate-900' : 'text-slate-100'
+                className={`text-2xl sm:text-3xl font-black font-['Chakra_Petch',sans-serif] ${
+                  isBatman ? 'text-slate-100' : isDark ? 'text-slate-100' : 'text-slate-900'
                 }`}
               >
                 {commander.rank} {commander.firstName} {commander.lastName}
               </div>
-              <div className={`text-xs mt-1 ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>
-                ตำแหน่งเลขที่: <span className="font-mono font-semibold text-amber-600">{commander.positionNumber}</span>
+              <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                ผู้บังคับบัญชาสูงสุด สำนักงานกำลังพล สำนักงานตำรวจแห่งชาติ
+              </p>
+            </div>
+          )}
+
+          {/* Deputy Commanders Showcase (รอง ผบช.สกพ.) */}
+          {deputyCommanders.length > 0 && (
+            <div className="w-full max-w-3xl mb-8">
+              <div
+                className={`text-xs uppercase tracking-widest font-bold mb-3 ${
+                  isBatman ? 'text-[#FFE500]' : isDark ? 'text-slate-400' : 'text-[#1E3A8A]'
+                }`}
+              >
+                รองผู้บัญชาการ สำนักงานกำลังพล (รอง ผบช.สกพ. ๓ ท่าน)
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {deputyCommanders.map((dep, idx) => (
+                  <div
+                    key={dep.id}
+                    className={`p-3.5 rounded-2xl border text-center transition-all ${
+                      isBatman
+                        ? 'bg-[#12121A] border-[#2A2A3C] hover:border-[#FFE500]'
+                        : isDark
+                        ? 'bg-slate-900/70 border-slate-800 hover:border-amber-500/50'
+                        : 'bg-white/90 border-[#DBEAFE] hover:border-[#60A5FA] shadow-2xs'
+                    }`}
+                  >
+                    <div className={`text-[11px] font-bold mb-1 ${isBatman ? 'text-[#FFE500]' : isDark ? 'text-amber-400' : 'text-[#2563EB]'}`}>
+                      รอง ผบช.สกพ. ({idx + 1})
+                    </div>
+                    <div className={`text-sm font-bold ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                      {dep.rank} {dep.firstName}
+                    </div>
+                    <div className={`text-xs truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {dep.lastName}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Deputy Commanders (รอง ผบช.) */}
-          <div className="w-full max-w-2xl mb-10">
+          {/* 4 Key Official Divisions Structure (๔ หน่วยงานหลักในสังกัด สกพ.) */}
+          <div className="w-full max-w-3xl mb-8">
             <div
               className={`text-xs uppercase tracking-widest font-bold mb-3 ${
-                isPastel ? 'text-[#1E3A8A]' : 'text-slate-400'
+                isBatman ? 'text-[#FFE500]' : isDark ? 'text-slate-400' : 'text-slate-700'
               }`}
             >
-              รองผู้บัญชาการ สำนักงานกำลังพล
+              ๔ ส่วนราชการหลักในสังกัด สำนักงานกำลังพล
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {deputyCommanders.map((dep, idx) => (
-                <div
-                  key={dep.id}
-                  className={`p-3 rounded-xl border text-center transition-all ${
-                    isPastel
-                      ? 'bg-white/90 border-[#DBEAFE] hover:border-[#60A5FA] shadow-2xs'
-                      : 'bg-slate-900/60 border-slate-800 hover:border-amber-500/40'
-                  }`}
-                >
-                  <div className={`text-xs font-bold mb-1 ${isPastel ? 'text-[#2563EB]' : 'text-amber-400'}`}>
-                    รอง ผบช.สกพ. ({idx + 1})
-                  </div>
-                  <div className={`text-sm font-semibold ${isPastel ? 'text-slate-800' : 'text-slate-200'}`}>
-                    {dep.rank} {dep.firstName}
-                  </div>
-                  <div className={`text-xs truncate ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>
-                    {dep.lastName}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Division Heads (ผู้บังคับการกอง 3 หน่วยงานหลัก) */}
-          <div className="w-full max-w-2xl mb-10">
-            <div
-              className={`text-xs uppercase tracking-widest font-bold mb-3 ${
-                isPastel ? 'text-slate-700' : 'text-slate-400'
-              }`}
-            >
-              ผู้บังคับการหน่วยงานในสังกัด สกพ.
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {divisionCommanders.map((cmd) => (
-                <button
-                  key={cmd.id}
-                  onClick={() => onSelectDivision(cmd.division)}
-                  className={`p-3 rounded-xl border text-center transition-all cursor-pointer group ${
-                    isPastel
-                      ? 'bg-white/90 border-slate-200 hover:border-amber-500 hover:bg-[#FEF9EE] shadow-2xs'
-                      : 'bg-slate-900/60 border-slate-800 hover:border-amber-400 hover:bg-slate-850'
-                  }`}
-                >
-                  <div
-                    className={`text-xs font-bold mb-1 group-hover:text-amber-600 ${
-                      isPastel ? 'text-[#854D0E]' : 'text-amber-400'
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                {
+                  id: 'สกพ.',
+                  name: 'ส่วนบังคับบัญชา / ฝอ.',
+                  count: skpOfficers.length,
+                  occupied: skpOfficers.filter((o) => !o.isVacant).length,
+                  icon: Shield,
+                  color: isBatman ? 'text-[#FFE500]' : 'text-blue-500',
+                  badge: isBatman ? 'bg-[#FFE500]/15 text-[#FFE500]' : 'bg-blue-100 text-blue-800',
+                },
+                {
+                  id: 'กองอัตรากำลัง สกพ.',
+                  name: 'กองอัตรากำลัง (อต.)',
+                  count: otOfficers.length,
+                  occupied: otOfficers.filter((o) => !o.isVacant).length,
+                  icon: Briefcase,
+                  color: isBatman ? 'text-[#34D399]' : 'text-emerald-500',
+                  badge: isBatman ? 'bg-[#10B981]/15 text-[#34D399]' : 'bg-emerald-100 text-emerald-800',
+                },
+                {
+                  id: 'กองทะเบียนพล สกพ.',
+                  name: 'กองทะเบียนพล (ทพ.)',
+                  count: tpOfficers.length,
+                  occupied: tpOfficers.filter((o) => !o.isVacant).length,
+                  icon: FileCheck,
+                  color: isBatman ? 'text-[#38BDF8]' : 'text-indigo-500',
+                  badge: isBatman ? 'bg-[#38BDF8]/15 text-[#38BDF8]' : 'bg-indigo-100 text-indigo-800',
+                },
+                {
+                  id: 'กองสวัสดิการ สกพ.',
+                  name: 'กองสวัสดิการ (สก.)',
+                  count: skOfficers.length,
+                  occupied: skOfficers.filter((o) => !o.isVacant).length,
+                  icon: HeartHandshake,
+                  color: isBatman ? 'text-[#FB7185]' : 'text-rose-500',
+                  badge: isBatman ? 'bg-[#F43F5E]/15 text-[#FB7185]' : 'bg-rose-100 text-rose-800',
+                },
+              ].map((item) => {
+                const ItemIcon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => onSelectDivision(item.id)}
+                    className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer group flex flex-col justify-between ${
+                      isBatman
+                        ? 'bg-[#12121A] border-[#2A2A3C] hover:border-[#FFE500] hover:scale-[1.02]'
+                        : isDark
+                        ? 'bg-slate-900/60 border-slate-800 hover:border-amber-400 hover:scale-[1.02]'
+                        : 'bg-white/90 border-slate-200 hover:border-amber-500 hover:bg-[#FEF9EE] hover:scale-[1.02] shadow-2xs'
                     }`}
                   >
-                    {cmd.division.replace(' สกพ.', '')}
-                  </div>
-                  <div className={`text-sm font-semibold ${isPastel ? 'text-slate-800' : 'text-slate-100'}`}>
-                    {cmd.rank} {cmd.firstName}
-                  </div>
-                  <div className={`text-xs truncate ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>
-                    {cmd.lastName}
-                  </div>
-                  <span className="inline-block mt-1 text-[10px] text-amber-600 group-hover:underline">
-                    ดูทำเนียบกองนี้ &rarr;
-                  </span>
-                </button>
-              ))}
+                    <div>
+                      <div className="flex items-center justify-center mb-1.5">
+                        <ItemIcon className={`w-5 h-5 ${item.color}`} />
+                      </div>
+                      <div className={`text-xs font-bold mb-1 ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>
+                        {item.name}
+                      </div>
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-[10px]">
+                      <span className={item.badge + ' px-2 py-0.5 rounded-full font-mono font-bold'}>
+                        {item.count} อัตรา
+                      </span>
+                      <span className="text-amber-500 font-semibold group-hover:underline">
+                        ดูรายชื่อ &rarr;
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Key Quick Stats */}
+          {/* Key Executive Manpower Statistics */}
           <div
-            className={`grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-2xl border-t border-b py-4 mb-8 ${
-              isPastel ? 'border-slate-200' : 'border-slate-800'
+            className={`grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-3xl border-t border-b py-5 mb-8 ${
+              isBatman ? 'border-[#262635]' : isDark ? 'border-slate-800' : 'border-slate-300'
             }`}
           >
             <div className="text-center">
-              <div className={`text-2xl font-bold font-mono tabular-nums ${isPastel ? 'text-[#854D0E]' : 'text-amber-300'}`}>
+              <div className={`text-2xl sm:text-3xl font-black font-mono tabular-nums ${isBatman ? 'text-[#FFE500]' : isDark ? 'text-amber-300' : 'text-[#854D0E]'}`}>
                 {totalPositions}
               </div>
-              <div className={`text-xs ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>กรอบอัตรากำลังทั้งหมด</div>
+              <div className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                กรอบอัตรากำลังทั้งหมด
+              </div>
             </div>
             <div className="text-center">
-              <div className={`text-2xl font-bold font-mono tabular-nums ${isPastel ? 'text-emerald-700' : 'text-emerald-400'}`}>
+              <div className={`text-2xl sm:text-3xl font-black font-mono tabular-nums ${isBatman ? 'text-[#34D399]' : isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
                 {occupiedCount}
               </div>
-              <div className={`text-xs ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>มีผู้ครองตำแหน่ง</div>
+              <div className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                มีผู้ครองตำแหน่ง ({totalPositions > 0 ? Math.round((occupiedCount / totalPositions) * 100) : 0}%)
+              </div>
             </div>
             <div className="text-center">
-              <div className={`text-2xl font-bold font-mono tabular-nums ${isPastel ? 'text-blue-700' : 'text-blue-400'}`}>
+              <div className={`text-2xl sm:text-3xl font-black font-mono tabular-nums ${isBatman ? 'text-[#38BDF8]' : isDark ? 'text-blue-400' : 'text-blue-700'}`}>
                 {commissionedCount}
               </div>
-              <div className={`text-xs ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>ชั้นสัญญาบัตร</div>
+              <div className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                ชั้นสัญญาบัตร
+              </div>
             </div>
             <div className="text-center">
-              <div className={`text-2xl font-bold font-mono tabular-nums ${isPastel ? 'text-indigo-700' : 'text-indigo-400'}`}>
+              <div className={`text-2xl sm:text-3xl font-black font-mono tabular-nums ${isBatman ? 'text-[#FB7185]' : isDark ? 'text-rose-400' : 'text-indigo-700'}`}>
                 {nonCommissionedCount}
               </div>
-              <div className={`text-xs ${isPastel ? 'text-slate-500' : 'text-slate-400'}`}>ชั้นประทวน</div>
+              <div className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                ชั้นประทวน
+              </div>
             </div>
           </div>
 
-          {/* Footer Note */}
-          <div className={`text-xs font-['Sarabun',sans-serif] space-y-1 ${isPastel ? 'text-slate-500' : 'text-slate-500'}`}>
-            <p>ฝ่ายอำนวยการ สำนักงานกำลังพล อาคาร ๕ ชั้น ๗ สำนักงานตำรวจแห่งชาติ</p>
+          {/* Official Government Address & Registry Footer */}
+          <div className={`text-xs font-['Sarabun',sans-serif] space-y-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            <p className="font-bold">ฝ่ายอำนวยการ สำนักงานกำลังพล อาคาร ๕ ชั้น ๗ สำนักงานตำรวจแห่งชาติ</p>
             <p>ถนนพระรามที่ ๑ แขวงปทุมวัน เขตปทุมวัน กรุงเทพมหานคร ๑๐๓๓๐</p>
+            <p className="text-[11px] opacity-75">โทรศัพท์ ๐-๒๒๐๕-๒๓๗๖-๗ · จัดทำขึ้นเพื่อการบริหารจัดการข้อมูลกำลังพลภายในหน่วยงาน</p>
           </div>
         </div>
       </div>
 
-      {/* Directory Quick Navigation Cards in Police Pastel */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 print:hidden">
+      {/* Quick Navigation Cards into Org Chart & Management */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[900px] mx-auto print:hidden">
         <div
-          onClick={() => onSelectDivision('สกพ.')}
-          className={`p-5 rounded-2xl border transition-all cursor-pointer group shadow-2xs ${
-            isPastel
-              ? 'bg-[#F0F7FC] border-[#BAE6FD] hover:border-[#0284C7] hover:shadow-md'
-              : 'bg-slate-900 border-slate-800 hover:border-amber-500'
+          onClick={onOpenManagement}
+          className={`p-6 rounded-3xl border-2 transition-all cursor-pointer group shadow-md flex items-center justify-between ${
+            isBatman
+              ? 'bg-[#111117] border-[#FFE500]/50 hover:border-[#FFE500] hover:shadow-[0_0_20px_rgba(255,229,0,0.2)]'
+              : isDark
+              ? 'bg-slate-900 border-slate-800 hover:border-amber-400'
+              : 'bg-white border-slate-200 hover:border-blue-500 hover:shadow-lg'
           }`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-[#0284C7] border border-[#BAE6FD]">
-              <Shield className="w-5 h-5" />
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isBatman ? 'bg-[#FFE500]/15 text-[#FFE500]' : 'bg-blue-500/10 text-blue-600'}`}>
+              <Network className="w-6 h-6" />
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#0284C7] group-hover:translate-x-0.5 transition-all" />
+            <div>
+              <h3 className={`text-base font-bold font-['Chakra_Petch',sans-serif] ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+                เปิดดูแผนผังโครงสร้างสายบังคับบัญชา
+              </h3>
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                คลิกเพื่อดูผังองค์กรแบบ Interactive Tree View และจัดสรรกำลังพล
+              </p>
+            </div>
           </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#0284C7] transition-colors flex items-center justify-between">
-            <span>ส่วนอำนวยการ สกพ. & กอ.รมน.</span>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">{skpCount} อัตรา</span>
-          </h3>
-          <p className="text-xs text-slate-500">
-            สำนักงานผู้บังคับบัญชา, ฝ่ายอำนวยการ สกพ., ปฏิบัติงาน กอ.รมน.
-          </p>
+          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
         </div>
 
         <div
-          onClick={() => onSelectDivision('กองอัตรากำลัง สกพ.')}
-          className={`p-5 rounded-2xl border transition-all cursor-pointer group shadow-2xs ${
-            isPastel
-              ? 'bg-[#F2FBF7] border-[#A7F3D0] hover:border-[#059669] hover:shadow-md'
-              : 'bg-slate-900 border-slate-800 hover:border-amber-500'
+          onClick={onOpenDirectory}
+          className={`p-6 rounded-3xl border-2 transition-all cursor-pointer group shadow-md flex items-center justify-between ${
+            isBatman
+              ? 'bg-[#111117] border-[#FFE500]/50 hover:border-[#FFE500] hover:shadow-[0_0_20px_rgba(255,229,0,0.2)]'
+              : isDark
+              ? 'bg-slate-900 border-slate-800 hover:border-amber-400'
+              : 'bg-white border-slate-200 hover:border-emerald-500 hover:shadow-lg'
           }`}
         >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-[#059669] border border-[#A7F3D0]">
-              <Building2 className="w-5 h-5" />
+          <div className="flex items-center gap-4">
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isBatman ? 'bg-[#FFE500]/15 text-[#FFE500]' : 'bg-emerald-500/10 text-emerald-600'}`}>
+              <FileSpreadsheet className="w-6 h-6" />
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#059669] group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#059669] transition-colors flex items-center justify-between">
-            <span>กองอัตรากำลัง (อต.)</span>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">{otCount} อัตรา</span>
-          </h3>
-          <p className="text-xs text-slate-500">
-            ฝ่ายวิเคราะห์ตำแหน่ง, ควบคุมอัตรากำลัง, มาตรฐานตำแหน่ง
-          </p>
-        </div>
-
-        <div
-          onClick={() => onSelectDivision('กองทะเบียนพล สกพ.')}
-          className={`p-5 rounded-2xl border transition-all cursor-pointer group shadow-2xs ${
-            isPastel
-              ? 'bg-[#F4F6FD] border-[#C7D2FE] hover:border-[#4F46E5] hover:shadow-md'
-              : 'bg-slate-900 border-slate-800 hover:border-amber-500'
-          }`}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-[#4F46E5] border border-[#C7D2FE]">
-              <Award className="w-5 h-5" />
+            <div>
+              <h3 className={`text-base font-bold font-['Chakra_Petch',sans-serif] ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+                เปิดดูตารางทำเนียบกำลังพล ({totalPositions} อัตรา)
+              </h3>
+              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                ค้นหา คัดกรอง แก้ไข นำเข้าและดาวน์โหลดไฟล์ Excel / PDF
+              </p>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#4F46E5] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#4F46E5] transition-colors flex items-center justify-between">
-            <span>กองทะเบียนพล (ทพ.)</span>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">{tpCount} อัตรา</span>
-          </h3>
-          <p className="text-xs text-slate-500">
-            ฝ่ายประวัติบุคคล, แต่งตั้ง, บรรจุ, ความชอบ, ประเมินบุคคล
-          </p>
-        </div>
-
-        <div
-          onClick={() => onSelectDivision('กองสวัสดิการ สกพ.')}
-          className={`p-5 rounded-2xl border transition-all cursor-pointer group shadow-2xs ${
-            isPastel
-              ? 'bg-[#FDF3F5] border-[#FBCFE8] hover:border-[#DB2777] hover:shadow-md'
-              : 'bg-slate-900 border-slate-800 hover:border-amber-500'
-          }`}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-white shadow-2xs flex items-center justify-center text-[#DB2777] border border-[#FBCFE8]">
-              <Users className="w-5 h-5" />
-            </div>
-            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#DB2777] group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <h3 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-[#DB2777] transition-colors flex items-center justify-between">
-            <span>กองสวัสดิการ (สก.)</span>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-pink-100 text-pink-800">{skCount} อัตรา</span>
-          </h3>
-          <p className="text-xs text-slate-500">
-            ฝ่ายดนตรี, การเงิน, บ้านพัก, ฌาปนกิจ, สโมสร, กีฬา, อนุศาสนาจารย์
-          </p>
+          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
         </div>
       </div>
     </div>

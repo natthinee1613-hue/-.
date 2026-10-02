@@ -15,10 +15,20 @@ import {
   FileCheck,
   HeartHandshake,
   Layers,
+  Network,
   Sparkles,
   ExternalLink,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Search,
+  X,
+  Printer,
+  SlidersHorizontal,
+  Flame,
+  Radio,
+  Zap,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface OrgChartProps {
@@ -61,6 +71,18 @@ export const OrgChart: React.FC<OrgChartProps> = ({
     'กองสวัสดิการ สกพ.',
   ]);
 
+  // Interactive Feature: Search within OrgChart
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Interactive Feature: Bat-Signal / Aura Glow Toggle
+  const [isBatSignalActive, setIsBatSignalActive] = useState(true);
+
+  // Interactive Feature: Compact / Detailed View Mode
+  const [isCompactMode, setIsCompactMode] = useState(false);
+
+  // Interactive Feature: Division Filter Focus
+  const [focusedDivision, setFocusedDivision] = useState<string>('all');
+
   // Selected sub-division for dedicated pop-up table view (completely isolated from other tables)
   const [selectedSubDiv, setSelectedSubDiv] = useState<{
     divisionId: string;
@@ -81,6 +103,10 @@ export const OrgChart: React.FC<OrgChartProps> = ({
 
   const collapseAll = () => {
     setExpandedDivisions([]);
+  };
+
+  const handlePrintOrgChart = () => {
+    window.print();
   };
 
   const commander = officers.find((o) => o.positionLevel === 'ผบช.');
@@ -111,7 +137,7 @@ export const OrgChart: React.FC<OrgChartProps> = ({
         {
           name: 'ฝ่ายอำนวยการ สกพ.',
           label: 'ฝ่ายอำนวยการ สกพ. (ฝอ.สกพ.)',
-          desc: 'นโยบาย ยุทธศาสตร์ แผนงาน สารบรรณ และการบังคับบัญชา',
+          desc: 'ธุรการ การเงิน กำลังพล ยุทธศาสตร์ และอำนวยการส่วนกลาง สกพ.',
         },
       ],
     },
@@ -131,22 +157,22 @@ export const OrgChart: React.FC<OrgChartProps> = ({
         {
           name: 'ฝ่ายอำนวยการ อต.',
           label: 'ฝ่ายอำนวยการ (ฝอ.อต.)',
-          desc: 'ธุรการ กำลังพล และการอำนวยการ บก.อต.',
+          desc: 'งานธุรการ สารบรรณ พัสดุ และอำนวยการ บก.อต.',
+        },
+        {
+          name: 'ฝ่ายวางแผนอัตรากำลัง อต.',
+          label: 'ฝ่ายวางแผนอัตรากำลัง',
+          desc: 'วางแผนและกำหนดกรอบอัตรากำลังระยะยาวของ ตร.',
         },
         {
           name: 'ฝ่ายควบคุมอัตรากำลัง อต.',
           label: 'ฝ่ายควบคุมอัตรากำลัง',
-          desc: 'บริหาร ควบคุม และจัดสรรกรอบอัตรากำลัง ตร.',
+          desc: 'ควบคุม ตรวจสอบ และบริหารการตัดโอนตำแหน่งกำลังพล',
         },
         {
-          name: 'ฝ่ายวิเคราะห์ตำแหน่ง 1 อต.',
-          label: 'ฝ่ายวิเคราะห์ตำแหน่ง ๑',
-          desc: 'วิเคราะห์กำหนดและปรับปรุงโครงสร้างตำแหน่งกลุ่ม ๑',
-        },
-        {
-          name: 'ฝ่ายวิเคราะห์ตำแหน่ง 2 อต.',
-          label: 'ฝ่ายวิเคราะห์ตำแหน่ง ๒',
-          desc: 'วิเคราะห์กำหนดและปรับปรุงโครงสร้างตำแหน่งกลุ่ม ๒',
+          name: 'ฝ่ายวิเคราะห์ตำแหน่ง อต.',
+          label: 'ฝ่ายวิเคราะห์ตำแหน่ง',
+          desc: 'วิเคราะห์โครงสร้างหน่วยงานและการจัดตั้งหน่วยใหม่',
         },
         {
           name: 'ฝ่ายมาตรฐานตำแหน่ง อต.',
@@ -201,22 +227,22 @@ export const OrgChart: React.FC<OrgChartProps> = ({
         {
           name: 'ฝ่ายความชอบ ทพ.',
           label: 'ฝ่ายความชอบ',
-          desc: 'การเลื่อนขั้นเงินเดือน เครื่องราชอิสริยาภรณ์ และบำเหน็จความชอบ',
+          desc: 'การขอพระราชทานเครื่องราชอิสริยาภรณ์และเหรียญตรา',
         },
         {
-          name: 'ฝ่ายประเมินบุคคล ทพ.',
-          label: 'ฝ่ายประเมินบุคคล',
-          desc: 'การประเมินสมรรถนะ ประเมินผลงาน และคุณลักษณะบุคคล',
+          name: 'ฝ่ายประเมินบุคคลและผลงาน ทพ.',
+          label: 'ฝ่ายประเมินบุคคลและผลงาน',
+          desc: 'การประเมินผลการปฏิบัติราชการและเลื่อนระดับตำแหน่ง',
         },
         {
-          name: 'กลุ่มงานพัฒนาทรัพยากรบุคคล ทพ.',
-          label: 'กลุ่มงานพัฒนาทรัพยากรบุคคล',
-          desc: 'ฝึกอบรม พัฒนาศักยภาพ และส่งเสริมเส้นทางความก้าวหน้า',
+          name: 'ฝ่ายข้อมูลและสารสนเทศ ทพ.',
+          label: 'ฝ่ายข้อมูลและสารสนเทศ',
+          desc: 'ระบบสารสนเทศทะเบียนประวัติและฐานข้อมูลกำลังพล ตร.',
         },
         {
-          name: 'สำรองราชการ กองทะเบียนพล',
-          label: 'สำรองราชการ กองทะเบียนพล',
-          desc: 'อัตราประจำหรือสำรองราชการในสังกัด ทพ.',
+          name: 'กลุ่มงานระบบการแต่งตั้ง ทพ.',
+          label: 'กลุ่มงานระบบการแต่งตั้ง',
+          desc: 'พัฒนาระบบและมาตรฐานการแต่งตั้งโยกย้ายกำลังพล',
         },
       ],
     },
@@ -236,17 +262,12 @@ export const OrgChart: React.FC<OrgChartProps> = ({
         {
           name: 'ฝ่ายอำนวยการ สก.',
           label: 'ฝ่ายอำนวยการ (ฝอ.สก.)',
-          desc: 'อำนวยการ ประสานงานสวัสดิการ และบริหารทั่วไป',
+          desc: 'งานธุรการ การเงิน สารบรรณ และอำนวยการ บก.สก.',
         },
         {
-          name: 'ฝ่ายการจัดสวัสดิการ สก.',
-          label: 'ฝ่ายการจัดสวัสดิการ',
-          desc: 'การจัดสวัสดิการข้าราชการตำรวจและครอบครัว',
-        },
-        {
-          name: 'ฝ่ายสวัสดิการการเงิน สก.',
-          label: 'ฝ่ายสวัสดิการการเงิน',
-          desc: 'กองทุนสวัสดิการ สินเชื่อ และการกู้ยืมเพื่อตำรวจ',
+          name: 'ฝ่ายสงเคราะห์และสิทธิประโยชน์ สก.',
+          label: 'ฝ่ายสงเคราะห์และสิทธิประโยชน์',
+          desc: 'การสงเคราะห์ข้าราชการตำรวจและครอบครัวผู้ประสบภัย',
         },
         {
           name: 'ฝ่ายสวัสดิการบ้านพัก สก.',
@@ -283,104 +304,250 @@ export const OrgChart: React.FC<OrgChartProps> = ({
   ];
 
   const cmdTheme = currentTheme.orgChart.commander;
+  const isBatman = currentTheme.id === 'batman-dark-knight';
+
+  // Search match counts
+  const cleanSearch = searchTerm.trim().toLowerCase();
+  const matchedOfficersCount = cleanSearch
+    ? officers.filter(
+        (o) =>
+          o.firstName.toLowerCase().includes(cleanSearch) ||
+          o.lastName.toLowerCase().includes(cleanSearch) ||
+          o.rank.toLowerCase().includes(cleanSearch) ||
+          o.positionTitle.toLowerCase().includes(cleanSearch) ||
+          o.division.toLowerCase().includes(cleanSearch) ||
+          o.subDivision.toLowerCase().includes(cleanSearch) ||
+          (o.positionNumber && o.positionNumber.toLowerCase().includes(cleanSearch))
+      ).length
+    : 0;
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* Header Banner */}
+    <div className={`space-y-6 animate-fadeIn relative ${isBatman && isBatSignalActive ? 'batman-active-glow' : ''}`}>
+      {/* Background Bat-Signal / Aura Glow Effect */}
+      {isBatSignalActive && (
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gradient-to-b from-[#FFE500]/10 via-[#FFE500]/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" />
+      )}
+
+      {/* Header Banner - Executive Modern Styling */}
       <div
-        className={`flex flex-wrap items-center justify-between gap-4 p-5 rounded-2xl border shadow-xs transition-colors ${
-          currentTheme.isDark
-            ? 'bg-slate-900/90 border-slate-800 text-slate-100'
-            : 'bg-white/95 border-slate-200 text-slate-800'
+        className={`flex flex-wrap items-center justify-between gap-5 p-6 rounded-3xl border shadow-lg transition-all relative overflow-hidden backdrop-blur-md ${
+          isBatman
+            ? 'bg-gradient-to-r from-[#0E0E14] via-[#12121A] to-[#0A0A0E] border-[#FFE500]/40 text-slate-100 shadow-[0_4px_25px_rgba(0,0,0,0.6)]'
+            : currentTheme.isDark
+            ? 'bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A] border-slate-700/80 text-slate-100 shadow-xl'
+            : 'bg-gradient-to-r from-white via-[#F8FAFC] to-[#F1F5F9] border-slate-200 text-slate-900 shadow-sm'
         }`}
       >
-        <div className="flex items-center gap-3.5">
+        {/* Subtle Accent Glow Top Line */}
+        <div
+          className={`absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${
+            isBatman
+              ? 'from-[#FFE500] via-[#FACC15] to-[#FFE500]'
+              : 'from-blue-600 via-amber-400 to-indigo-600'
+          }`}
+        />
+
+        {/* Title & Classification Hierarchy */}
+        <div className="flex items-center gap-4">
           <div
-            className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-xs border ${
-              currentTheme.isDark ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-md border ${
+              isBatman
+                ? 'bg-[#181824] border-[#FFE500]/50 text-[#FFE500]'
+                : currentTheme.isDark
+                ? 'bg-slate-800 border-slate-700 text-amber-400'
+                : 'bg-white border-slate-200 text-blue-700 shadow-xs'
             }`}
           >
-            <PoliceEmblem size={38} />
+            <Network className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-0.5">
               <span
-                className={`text-[11px] font-bold tracking-wider px-2.5 py-0.5 rounded-full border ${
-                  currentTheme.isDark
-                    ? 'bg-amber-950/80 text-amber-300 border-amber-800'
+                className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                  isBatman
+                    ? 'bg-[#FFE500]/15 text-[#FFE500] border-[#FFE500]/40'
+                    : currentTheme.isDark
+                    ? 'bg-amber-950/60 text-amber-300 border-amber-800/80'
                     : 'bg-blue-50 text-blue-700 border-blue-200'
                 }`}
               >
-                โครงสร้างการจัดหน่วย
-              </span>
-              <span className={`text-xs ${currentTheme.textMuted}`}>
-                คลิกเลือกฝ่ายไหน จะแสดงข้อมูลเฉพาะฝ่ายนั้นตามจำนวนจริง (ไม่กระทบตารางอื่น)
+                แผนผังโครงสร้างสายการบังคับบัญชา
               </span>
             </div>
-            <h2 className={`text-lg md:text-xl font-bold font-['Chakra_Petch',sans-serif] mt-0.5 ${currentTheme.textMain}`}>
-              แผนผังสายการบังคับบัญชา และโครงสร้างส่วนราชการ ๔ หน่วยงาน
+            <h2
+              className={`text-2xl sm:text-3xl font-black font-['Chakra_Petch',sans-serif] tracking-tight ${
+                isBatman
+                  ? 'text-[#FFE500] drop-shadow-[0_2px_10px_rgba(255,229,0,0.35)]'
+                  : currentTheme.textMain
+              }`}
+            >
+              สำนักงานกำลังพล (สกพ.)
             </h2>
+            <div className={`text-xs sm:text-sm font-semibold tracking-wide flex flex-wrap items-center gap-2 mt-1 ${isBatman ? 'text-slate-300' : currentTheme.textMuted}`}>
+              <span className="font-bold">สำนักงานตำรวจแห่งชาติ</span>
+              <span className="opacity-40">•</span>
+              <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-slate-500/10 border border-slate-500/20 font-bold">
+                รวม {officers.length} อัตรา
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Expand / Collapse Control Buttons */}
-        <div className="flex items-center gap-2">
+        {/* Action Controls & Interactive Tools */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+          {/* Compact vs Detailed Toggle */}
           <button
-            onClick={expandAll}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-colors cursor-pointer shadow-2xs ${
-              currentTheme.isDark
-                ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-750'
+            type="button"
+            onClick={() => setIsCompactMode(!isCompactMode)}
+            className={`flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-xs ${
+              isCompactMode
+                ? isBatman
+                  ? 'bg-[#FFE500]/20 text-[#FFE500] border-[#FFE500]/60'
+                  : currentTheme.isDark
+                  ? 'bg-slate-800 text-amber-300 border-amber-500/40'
+                  : 'bg-blue-50 text-blue-800 border-blue-300'
+                : currentTheme.isDark
+                ? 'bg-slate-850 border-slate-700 text-slate-200 hover:bg-slate-750'
                 : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
             }`}
           >
-            <Layers className="w-3.5 h-3.5 text-blue-500" />
-            ขยายทั้งหมด
+            {isCompactMode ? <Eye className="w-4 h-4 text-amber-400" /> : <SlidersHorizontal className="w-4 h-4 text-blue-500" />}
+            <span>{isCompactMode ? 'มุมมองกะทัดรัด' : 'มุมมองเต็ม'}</span>
           </button>
+
+          {/* Expand All */}
           <button
-            onClick={collapseAll}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border transition-colors cursor-pointer shadow-2xs ${
+            type="button"
+            onClick={expandAll}
+            className={`flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-xs ${
               currentTheme.isDark
-                ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-750'
-                : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                ? 'bg-slate-850 border-slate-700 text-slate-200 hover:bg-slate-750 hover:border-slate-600'
+                : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400'
             }`}
           >
-            ย่อทั้งหมด
+            <Layers className="w-4 h-4 text-blue-500" />
+            <span>ขยายทั้งหมด</span>
+          </button>
+
+          {/* Collapse All */}
+          <button
+            type="button"
+            onClick={collapseAll}
+            className={`flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-xs ${
+              currentTheme.isDark
+                ? 'bg-slate-850 border-slate-700 text-slate-200 hover:bg-slate-750 hover:border-slate-600'
+                : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400'
+            }`}
+          >
+            <span>ย่อทั้งหมด</span>
+          </button>
+
+          {/* Print button */}
+          <button
+            type="button"
+            onClick={handlePrintOrgChart}
+            className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl border transition-all cursor-pointer shadow-sm print:hidden ${
+              isBatman
+                ? 'bg-[#FFE500] text-slate-950 border-[#FFE500] hover:bg-[#FACC15] shadow-[0_0_15px_rgba(255,229,0,0.35)]'
+                : currentTheme.isDark
+                ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-500'
+                : 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-700'
+            }`}
+          >
+            <Printer className="w-4 h-4" />
+            <span>พิมพ์ผัง</span>
           </button>
         </div>
       </div>
 
+      {/* Interactive HUD Control & Search Bar */}
+      <div
+        className={`p-4 rounded-2xl border shadow-xs transition-colors flex flex-wrap items-center justify-between gap-3 ${
+          currentTheme.isDark
+            ? 'bg-[#12121A]/90 border-[#262638]'
+            : 'bg-slate-50 border-slate-200'
+        }`}
+      >
+        {/* Instant Search in Org Chart */}
+        <div className="relative flex-1 min-w-[260px] max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="ค้นหาชื่อตำแหน่ง, ยศ, ชื่อ-สกุล หรือฝ่ายในแผนผัง..."
+            className={`w-full pl-9 pr-9 py-2 text-xs rounded-xl border transition-all ${
+              currentTheme.isDark
+                ? 'bg-[#09090D] border-[#2E2E3E] text-slate-100 placeholder-slate-500 focus:border-[#FFE500] focus:ring-1 focus:ring-[#FFE500]'
+                : 'bg-white border-slate-300 text-slate-800 placeholder-slate-400 focus:border-blue-500'
+            }`}
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-200"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Quick Filter by Division Pill Buttons */}
+        <div className="flex flex-wrap items-center gap-1.5 text-xs">
+          <span className={`text-[11px] font-bold ${currentTheme.textMuted} mr-1`}>เลือกแสดง:</span>
+          {[
+            { id: 'all', label: 'ทั้งหมด (๔ กอง)' },
+            { id: 'สกพ.', label: 'ส่วนบังคับบัญชา / ฝอ.' },
+            { id: 'กองอัตรากำลัง สกพ.', label: 'กองอัตรากำลัง (อต.)' },
+            { id: 'กองทะเบียนพล สกพ.', label: 'กองทะเบียนพล (ทพ.)' },
+            { id: 'กองสวัสดิการ สกพ.', label: 'กองสวัสดิการ (สก.)' },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setFocusedDivision(item.id)}
+              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
+                focusedDivision === item.id
+                  ? isBatman
+                    ? 'bg-[#FFE500] text-slate-950 border-[#FFE500] shadow-[0_0_10px_rgba(255,229,0,0.3)]'
+                    : 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                  : currentTheme.isDark
+                  ? 'bg-[#171722] border-[#2A2A3C] text-slate-300 hover:border-[#FFE500]/50'
+                  : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        {searchTerm && (
+          <div className="w-full text-xs font-semibold text-amber-400 flex items-center gap-1.5 pt-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>พบผลการค้นหา {matchedOfficersCount} รายการในแผนผัง</span>
+          </div>
+        )}
+      </div>
+
       {/* Level 1: Commander in Chief (ผบช.สกพ.) */}
-      <div className="max-w-xl mx-auto text-center relative">
+      <div className="max-w-3xl mx-auto text-center relative">
         {commander && (
           <div
             onClick={() => onViewOfficer(commander)}
-            className={`group relative p-5 rounded-3xl ${cmdTheme.bg} border-2 ${cmdTheme.border} shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all cursor-pointer`}
+            className={`group relative p-5 rounded-3xl ${cmdTheme.bg} border-2 ${cmdTheme.border} shadow-xl hover:scale-[1.02] transition-all cursor-pointer overflow-hidden ${
+              isBatman && isBatSignalActive ? 'ring-2 ring-[#FFE500]/50' : ''
+            }`}
           >
-            {/* Crown ornament */}
-            <div
-              className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-bold tracking-wider shadow-sm flex items-center gap-1 font-['Chakra_Petch',sans-serif] ${cmdTheme.badge}`}
-            >
-              <Sparkles className="w-3 h-3" />
-              ผู้บังคับบัญชาสูงสุดของหน่วย
-            </div>
+            {/* Bat-Signal Glow in card */}
+            {isBatman && isBatSignalActive && (
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-[#FFE500]/15 rounded-full blur-xl pointer-events-none animate-pulse" />
+            )}
 
-            <div className={`flex items-center justify-center gap-2 text-xs font-bold mt-1 mb-1 ${cmdTheme.subtext}`}>
-              <Shield className="w-4 h-4" />
-              <span>ผู้บัญชาการ สำนักงานกำลังพล (ผบช.สกพ.)</span>
+            <div className={`text-xs font-bold mb-1.5 ${cmdTheme.subtext}`}>
+              ผู้บัญชาการ สำนักงานกำลังพล (ผบช.สกพ.)
             </div>
 
             <div className={`text-xl md:text-2xl font-bold ${cmdTheme.text}`}>
               {commander.rank} {commander.firstName} {commander.lastName}
-            </div>
-
-            <div className={`text-xs mt-1 font-mono font-medium ${cmdTheme.subtext}`}>
-              เลขตำแหน่ง: <span className="font-bold underline">{commander.positionNumber}</span>
-            </div>
-
-            <div className={`mt-3 pt-2.5 border-t border-black/10 dark:border-white/10 flex items-center justify-center gap-4 text-[11px] ${cmdTheme.subtext}`}>
-              <span>สถานะ: มีผู้ครองตำแหน่ง</span>
-              <span>·</span>
-              <span className="font-bold group-hover:underline">คลิกดูประวัติเต็ม &rarr;</span>
             </div>
           </div>
         )}
@@ -396,62 +563,76 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                 subDivLabel: 'สำนักงานผู้บังคับบัญชา สกพ. (ผบช., รอง ผบช., และนายเวร)',
               })
             }
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border transition-colors shadow-2xs cursor-pointer ${
-              currentTheme.isDark
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all shadow-xs cursor-pointer ${
+              isBatman
+                ? 'bg-[#151520] border-[#FFE500]/50 text-[#FFE500] hover:bg-[#FFE500] hover:text-slate-950'
+                : currentTheme.isDark
                 ? 'bg-amber-950/40 border-amber-800 text-amber-300 hover:bg-amber-900/60'
                 : 'bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100'
             }`}
           >
-            <Users className="w-3 h-3" />
-            <span>ดูทำเนียบสำนักงานผู้บังคับบัญชา สกพ. ({cmdOfficeCount} อัตรา)</span>
-            <ExternalLink className="w-2.5 h-2.5" />
+            <Users className="w-3.5 h-3.5" />
+            <span>สายบังคับบัญชา สำนักงานกำลังพล</span>
+            <ExternalLink className="w-3 h-3" />
           </button>
         </div>
 
-        {/* Hierarchy Connector Trunk */}
-        <div className="flex flex-col items-center">
-          <div className="w-0.5 h-5 bg-amber-500/50" />
-          <div className="w-3 h-3 rounded-full bg-amber-500 ring-4 ring-amber-200/50 dark:ring-amber-900/50" />
-          <div className="w-0.5 h-5 bg-amber-500/50" />
+        {/* Hierarchy Connector Trunk with Pulsing Energy Stream */}
+        <div className="flex flex-col items-center my-1">
+          <div className={`w-0.5 h-5 ${isBatman ? 'bg-[#FFE500]' : 'bg-amber-500/50'} relative`}>
+            <div className="absolute inset-0 bg-[#FFE500] animate-ping opacity-75" />
+          </div>
+          <div className={`w-3.5 h-3.5 rounded-full ${isBatman ? 'bg-[#FFE500] shadow-[0_0_10px_#FFE500]' : 'bg-amber-500'} ring-4 ring-amber-200/50 dark:ring-amber-900/50`} />
+          <div className={`w-0.5 h-5 ${isBatman ? 'bg-[#FFE500]' : 'bg-amber-500/50'}`} />
         </div>
 
-        {/* Level 2: Deputy Commanders (รอง ผบช.สกพ. {deputies.length} ท่าน) */}
+        {/* Level 2: Deputy Commanders */}
         <div
-          className={`p-3.5 rounded-2xl border shadow-2xs ${currentTheme.orgChart.deputiesBg} ${currentTheme.orgChart.deputiesBorder}`}
+          className={`p-4 rounded-2xl border shadow-md ${currentTheme.orgChart.deputiesBg} ${currentTheme.orgChart.deputiesBorder}`}
         >
-          <div className={`text-[11px] font-bold uppercase tracking-wider mb-2 ${currentTheme.orgChart.deputiesText}`}>
-            รองผู้บัญชาการ สำนักงานกำลังพล (รอง ผบช.สกพ. {deputies.length} ท่าน)
+          <div className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center justify-center gap-2 ${currentTheme.orgChart.deputiesText}`}>
+            <span>รองผู้บัญชาการ สำนักงานกำลังพล</span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-            {deputies.map((dep, idx) => (
-              <div
-                key={dep.id}
-                onClick={() => onViewOfficer(dep)}
-                className={`p-2.5 rounded-xl border transition-all cursor-pointer text-center group ${
-                  currentTheme.isDark
-                    ? 'bg-slate-900/90 border-slate-700/80 hover:border-amber-400'
-                    : 'bg-white border-slate-200 hover:border-blue-400 hover:shadow-2xs'
-                }`}
-              >
-                <div className={`text-[10px] font-bold mb-0.5 ${currentTheme.orgChart.deputiesText}`}>
-                  รอง ผบช. ({idx + 1})
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            {deputies.map((dep) => {
+              const isMatch = cleanSearch && (
+                dep.firstName.toLowerCase().includes(cleanSearch) ||
+                dep.lastName.toLowerCase().includes(cleanSearch) ||
+                dep.rank.toLowerCase().includes(cleanSearch) ||
+                dep.positionTitle.toLowerCase().includes(cleanSearch)
+              );
+              return (
+                <div
+                  key={dep.id}
+                  onClick={() => onViewOfficer(dep)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer text-center group flex flex-col justify-between hover:scale-[1.02] shadow-xs ${
+                    isMatch
+                      ? 'border-[#FFE500] bg-[#FFE500]/10 ring-2 ring-[#FFE500] scale-105'
+                      : currentTheme.isDark
+                      ? 'bg-slate-900/90 border-slate-700/80 hover:border-amber-400'
+                      : 'bg-white border-slate-200 hover:border-blue-400 hover:shadow-xs'
+                  }`}
+                >
+                  <div>
+                    <div className={`text-[11px] font-bold mb-1 ${currentTheme.orgChart.deputiesText}`}>
+                      {dep.positionTitle || 'รองผู้บัญชาการ สำนักงานกำลังพล'}
+                    </div>
+                    <div className={`font-bold text-sm leading-snug ${currentTheme.textMain}`}>
+                      {dep.rank} {dep.firstName} {dep.lastName}
+                    </div>
+                  </div>
+                  <div className="text-[10px] text-blue-600 dark:text-amber-400 opacity-80 group-hover:opacity-100 transition-opacity mt-2 flex items-center justify-center gap-1 font-semibold">
+                    <span>คลิกดูประวัติ</span>
+                    <span>&rarr;</span>
+                  </div>
                 </div>
-                <div className={`font-bold text-xs ${currentTheme.textMain}`}>
-                  {dep.rank} {dep.firstName}
-                </div>
-                <div className={`text-[11px] truncate ${currentTheme.textMuted}`}>
-                  {dep.lastName}
-                </div>
-                <div className="text-[10px] text-blue-600 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
-                  คลิกดูประวัติ &rarr;
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
         {/* Trunk down to divisions */}
-        <div className="w-0.5 h-8 bg-slate-300 dark:bg-slate-700 mx-auto" />
+        <div className={`w-0.5 h-8 ${isBatman ? 'bg-[#FFE500]/70' : 'bg-slate-300 dark:bg-slate-700'} mx-auto`} />
       </div>
 
       {/* Level 3: Main Divisions in Theme Palettes */}
@@ -478,7 +659,9 @@ export const OrgChart: React.FC<OrgChartProps> = ({
             };
           });
 
-          return [...orgStructure, ...dynamicDivisions];
+          const allBranches = [...orgStructure, ...dynamicDivisions];
+          if (focusedDivision === 'all') return allBranches;
+          return allBranches.filter((b) => b.id === focusedDivision);
         })().map((branch) => {
           const isExpanded = expandedDivisions.includes(branch.id);
           const totalInBranch = officers.filter((o) => o.division === branch.id).length;
@@ -490,76 +673,58 @@ export const OrgChart: React.FC<OrgChartProps> = ({
             currentTheme.orgChart.divisions['สกพ.'];
 
           // Auto-discover any extra sub-divisions if user added or imported customized data
-          const knownSubNames = new Set(branch.subDivisions.map((s) => s.name));
+          const knownSubNames = new Set(branch.subDivisions.map((s) => s.name.trim()));
           const dynamicSubs = Array.from(
             new Set(
               officers
-                .filter((o) => o.division === branch.id && !knownSubNames.has(o.subDivision))
-                .map((o) => o.subDivision)
+                .filter((o) => o.division === branch.id && !knownSubNames.has(o.subDivision.trim()))
+                .map((o) => o.subDivision.trim())
             )
           ).map((subName) => ({
             name: subName,
             label: subName,
-            desc: `หน่วยงานย่อยในสังกัด ${branch.shortName}`,
+            desc: `ฝ่ายงานในสังกัด ${branch.name}`,
           }));
 
-          const allSubDivisions = [...branch.subDivisions, ...dynamicSubs];
+          // ลบฝ่ายที่มีอัตราเป็น 0 ออกจากแผนผังทั้งหมด
+          const allSubDivisions = [...branch.subDivisions, ...dynamicSubs].filter((sub) => {
+            const subOfficers = getSubDivisionOfficers(officers, branch.id, sub.name);
+            return subOfficers.length > 0;
+          });
 
           return (
             <div
               key={branch.id}
-              className={`rounded-2xl ${divTheme.bg} border ${divTheme.border} shadow-xs hover:shadow-md transition-shadow overflow-hidden flex flex-col`}
+              className={`rounded-3xl border-2 transition-all shadow-md flex flex-col overflow-hidden relative ${divTheme.bg} ${divTheme.border} ${
+                isBatman && isBatSignalActive ? 'hover:shadow-[0_0_20px_rgba(255,229,0,0.2)]' : ''
+              }`}
             >
-              {/* Branch Header */}
-              <div
-                onClick={() => toggleDivision(branch.id)}
-                className={`p-4 ${divTheme.header} border-b ${divTheme.border} cursor-pointer transition-colors flex items-start justify-between gap-2`}
-              >
-                <div className="flex items-start gap-2.5">
-                  <div
-                    className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-2xs border ${
-                      currentTheme.isDark ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'
-                    }`}
-                  >
-                    <BranchIcon className={`w-4 h-4 ${divTheme.text}`} />
+              {/* Top Accent Color Bar */}
+              <div className={`h-1.5 w-full bg-gradient-to-r ${divTheme.bar}`} />
+
+              {/* Division Header */}
+              <div className={`p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between ${divTheme.header}`}>
+                <div
+                  onClick={() => toggleDivision(branch.id)}
+                  className="flex items-center gap-2.5 cursor-pointer flex-1 group"
+                >
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shadow-2xs border ${divTheme.badge}`}>
+                    <BranchIcon className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className={`text-[11px] font-bold font-mono block ${divTheme.text}`}>
+                    <h3 className={`font-bold text-sm leading-tight transition-colors ${divTheme.text}`}>
                       {branch.shortName}
-                    </span>
-                    <h3 className={`font-bold text-xs leading-snug mt-0.5 ${divTheme.text}`}>
-                      {branch.name}
                     </h3>
+                    <span className={`text-[10px] font-mono ${currentTheme.textMuted}`}>
+                      {totalInBranch} อัตรา (ครอง {occupiedInBranch})
+                    </span>
                   </div>
                 </div>
 
+                {/* View whole division button */}
                 <button
-                  className={`p-1 rounded-lg text-slate-500 hover:text-slate-800 border ${
-                    currentTheme.isDark ? 'bg-slate-800 border-slate-700' : 'bg-white/80 border-slate-200'
-                  }`}
-                  title={isExpanded ? 'ย่อเนื้อหา' : 'ขยายเนื้อหา'}
-                >
-                  {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-
-              {/* Stats Strip with click-to-view ALL officers of this division */}
-              <div
-                className={`px-3 py-2 border-b flex items-center justify-between text-[11px] ${
-                  currentTheme.isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-white/70 border-slate-200/60'
-                }`}
-              >
-                <div className="flex items-center gap-1.5">
-                  <span className={currentTheme.textMuted}>รวมทั้งกอง:</span>
-                  <span className={`font-mono font-bold ${currentTheme.textMain}`}>
-                    {totalInBranch} อัตรา
-                  </span>
-                </div>
-
-                {/* Clickable button to view all officers in this division without touching other tables */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  type="button"
+                  onClick={() => {
                     setSelectedSubDiv({
                       divisionId: branch.id,
                       divisionName: branch.name,
@@ -567,8 +732,10 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                       subDivLabel: `บุคลากรทั้งหมดในสังกัด ${branch.name}`,
                     });
                   }}
-                  className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold border transition-colors cursor-pointer ${
-                    currentTheme.isDark
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
+                    isBatman
+                      ? 'bg-[#151520] border-[#FFE500]/40 text-[#FFE500] hover:bg-[#FFE500] hover:text-slate-950'
+                      : currentTheme.isDark
                       ? 'bg-slate-800 border-slate-700 text-blue-300 hover:bg-slate-700'
                       : 'bg-white border-slate-300 text-blue-700 hover:bg-blue-50'
                   }`}
@@ -608,7 +775,7 @@ export const OrgChart: React.FC<OrgChartProps> = ({
 
               {/* Sub-divisions list: Clicking ANY sub-division displays ONLY that sub-division with EXACT count */}
               {isExpanded && (
-                <div className="p-3 space-y-2 flex-1">
+                <div className={`p-3 space-y-2 flex-1 ${isCompactMode ? 'space-y-1.5' : ''}`}>
                   <div className={`flex items-center justify-between text-[10px] font-bold uppercase tracking-wider px-1 mb-1 ${currentTheme.textMuted}`}>
                     <span>ฝ่าย / กลุ่มงานในสังกัด:</span>
                     <span>คลิกเพื่อดูรายชื่อ</span>
@@ -619,6 +786,18 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                     const subCount = subOfficers.length;
                     const subOccupied = subOfficers.filter((o) => !o.isVacant).length;
                     const subVacant = subCount - subOccupied;
+
+                    const isMatch = cleanSearch && (
+                      sub.label.toLowerCase().includes(cleanSearch) ||
+                      sub.name.toLowerCase().includes(cleanSearch) ||
+                      subOfficers.some(
+                        (o) =>
+                          o.firstName.toLowerCase().includes(cleanSearch) ||
+                          o.lastName.toLowerCase().includes(cleanSearch) ||
+                          o.rank.toLowerCase().includes(cleanSearch) ||
+                          o.positionTitle.toLowerCase().includes(cleanSearch)
+                      )
+                    );
 
                     return (
                       <div
@@ -631,7 +810,9 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                             subDivLabel: sub.label,
                           })
                         }
-                        className={`p-2.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between group shadow-2xs hover:scale-[1.01] ${divTheme.subItem}`}
+                        className={`p-2.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between group shadow-2xs hover:scale-[1.01] ${divTheme.subItem} ${
+                          isMatch ? 'border-[#FFE500] ring-2 ring-[#FFE500] bg-[#FFE500]/10 scale-[1.02]' : ''
+                        }`}
                       >
                         <div className="flex items-start justify-between gap-1.5 mb-1">
                           <span className="font-bold text-xs transition-colors line-clamp-1">
@@ -642,9 +823,11 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                           </span>
                         </div>
 
-                        <p className={`text-[10px] line-clamp-1 ${currentTheme.textMuted}`}>
-                          {sub.desc}
-                        </p>
+                        {!isCompactMode && (
+                          <p className={`text-[10px] line-clamp-1 ${currentTheme.textMuted}`}>
+                            {sub.desc}
+                          </p>
+                        )}
 
                         <div className="mt-1.5 pt-1.5 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-[10px]">
                           <span className={currentTheme.textMuted}>

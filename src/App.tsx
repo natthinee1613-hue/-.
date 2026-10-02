@@ -35,7 +35,7 @@ import {
 } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'police_directory_officers_v3';
-const THEME_STORAGE_KEY = 'police_directory_theme_id_v2';
+const THEME_STORAGE_KEY = 'police_directory_theme_id_v3';
 
 export default function App() {
   const [officers, setOfficers] = useState<PoliceOfficer[]>(() => {
@@ -123,13 +123,13 @@ export default function App() {
         return saved;
       }
     } catch (e) {}
-    return 'police-pastel';
+    return 'batman-dark-knight';
   });
 
   const currentTheme: AppTheme = THEMES.find((t) => t.id === themeId) || THEMES[0];
   const isPastelTheme = !currentTheme.isDark;
 
-  const [activeView, setActiveView] = useState<'cover' | 'directory' | 'breakdown' | 'orgChart'>('orgChart');
+  const [activeView, setActiveView] = useState<'directory' | 'breakdown' | 'orgChart'>('orgChart');
   const [divisionFilter, setDivisionFilter] = useState('all');
   const [subDivisionFilter, setSubDivisionFilter] = useState('all');
 
@@ -309,24 +309,7 @@ export default function App() {
         } ${currentTheme.headerBorder}`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          {/* Zone 1: Single text element wordmark */}
-          <div
-            onClick={() => setActiveView('orgChart')}
-            className="flex items-center gap-3 cursor-pointer group"
-          >
-            <PoliceEmblem size={34} className="group-hover:scale-105 transition-transform" />
-            <span
-              className={`text-base sm:text-lg font-bold tracking-tight font-['Chakra_Petch',sans-serif] transition-colors ${
-                currentTheme.isDark
-                  ? 'text-slate-100 group-hover:text-amber-300'
-                  : 'text-slate-900 group-hover:text-blue-900'
-              }`}
-            >
-              ทำเนียบกำลังพล สกพ.
-            </span>
-          </div>
-
-          {/* Zone 2: Navigation Links (แผนผังโครงสร้าง สลับมาอยู่ตำแหน่งแรก, หน้าปกทำเนียบ สลับไปอยู่ตำแหน่งท้าย) */}
+          {/* Navigation Links (แผนผังโครงสร้าง, ทำเนียบกำลังพล, ฯลฯ) */}
           <nav className="hidden md:flex items-center gap-1 sm:gap-2 text-xs font-semibold">
             <button
               onClick={() => setActiveView('orgChart')}
@@ -367,16 +350,6 @@ export default function App() {
             >
               <BarChart3 className="w-3.5 h-3.5" />
               แยกย่อยองค์ประกอบ
-            </button>
-
-            <button
-              onClick={() => setActiveView('cover')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-colors cursor-pointer ${
-                activeView === 'cover' ? currentTheme.navActive : currentTheme.navInactive
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              หน้าปกทำเนียบ
             </button>
           </nav>
 
@@ -487,14 +460,6 @@ export default function App() {
             }`}
           >
             แยกย่อยองค์ประกอบ
-          </button>
-          <button
-            onClick={() => setActiveView('cover')}
-            className={`px-2.5 py-1 rounded-lg whitespace-nowrap font-medium ${
-              activeView === 'cover' ? 'font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300' : 'text-slate-500'
-            }`}
-          >
-            หน้าปกทำเนียบ
           </button>
           <button
             onClick={() => setIsThemeModalOpen(true)}
@@ -628,20 +593,6 @@ export default function App() {
             isPastelTheme={isPastelTheme}
           />
         )}
-
-        {activeView === 'cover' && (
-          <DirectoryCover
-            officers={officers}
-            onOpenDirectory={() => {
-              setDivisionFilter('all');
-              setActiveView('directory');
-            }}
-            onOpenManagement={() => setActiveView('directory')}
-            onSelectDivision={handleSelectDivisionFromCover}
-            isPastelTheme={isPastelTheme}
-            currentTheme={currentTheme}
-          />
-        )}
       </main>
 
       {/* Modals */}
@@ -698,7 +649,6 @@ export default function App() {
       >
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <PoliceEmblem size={22} />
             <span className={`font-semibold ${currentTheme.textMain}`}>
               ทำเนียบกำลังพล สำนักงานกำลังพล สำนักงานตำรวจแห่งชาติ (สกพ.)
             </span>
