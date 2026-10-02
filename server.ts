@@ -54,7 +54,7 @@ app.get('/api/officers', (req, res) => {
   return res.json({
     success: true,
     count: 0,
-    data: null,
+    data: [],
     source: 'initial_default',
   });
 });
