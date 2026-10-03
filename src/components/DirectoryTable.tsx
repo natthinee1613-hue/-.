@@ -534,16 +534,35 @@ export const DirectoryTable: React.FC<DirectoryTableProps> = ({
         </div>
       )}
 
-      {/* Main Table Container */}
-      <div
-        className={`rounded-2xl border overflow-hidden shadow-sm ${
-          isPastelTheme
-            ? 'border-slate-200 bg-white text-slate-800'
-            : 'border-slate-800 bg-slate-900/90 text-slate-100'
-        }`}
-      >
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+      {/* Main Table Container with Animated Laser Light Beam Running Along Border */}
+      <div className="relative rounded-2xl p-[2.5px] overflow-hidden shadow-xl group transition-all">
+        {/* Continuous Animated Light Beam running around the entire table border */}
+        <div
+          className={`absolute -inset-[250%] animate-spin-beam pointer-events-none ${
+            isPastelTheme
+              ? 'bg-[conic-gradient(from_0deg,transparent_0deg,transparent_280deg,rgba(59,130,246,0.3)_315deg,#3b82f6_340deg,#93c5fd_355deg,#ffffff_358deg,#2563eb_360deg)] opacity-95'
+              : 'bg-[conic-gradient(from_0deg,transparent_0deg,transparent_280deg,rgba(245,158,11,0.25)_310deg,#F59E0B_335deg,#FFE500_355deg,#ffffff_358deg,#FFE500_360deg)] opacity-100'
+          }`}
+        />
+        {/* Outer Glow Halo */}
+        <div
+          className={`absolute -inset-[250%] animate-spin-beam blur-lg pointer-events-none ${
+            isPastelTheme
+              ? 'bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,#3b82f6_335deg,#93c5fd_355deg,#2563eb_360deg)] opacity-40'
+              : 'bg-[conic-gradient(from_0deg,transparent_0deg,transparent_290deg,#F59E0B_325deg,#FFE500_355deg,#FFE500_360deg)] opacity-55'
+          }`}
+        />
+
+        {/* Inner Table Card */}
+        <div
+          className={`relative z-10 rounded-[14px] border overflow-hidden ${
+            isPastelTheme
+              ? 'border-slate-200/90 bg-white text-slate-800'
+              : 'border-slate-800/90 bg-[#0d1222] text-slate-100'
+          }`}
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr
                 className={`border-b font-bold font-['Chakra_Petch',sans-serif] ${
@@ -866,5 +885,6 @@ export const DirectoryTable: React.FC<DirectoryTableProps> = ({
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };

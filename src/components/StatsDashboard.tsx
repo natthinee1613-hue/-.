@@ -374,62 +374,72 @@ export const StatsDashboard: React.FC<StatsDashboardProps> = ({
           </div>
         </div>
 
-        {/* Right: Sub-Division Breakdown (กก./ฝ่าย/กลุ่มงาน) */}
-        <div
-          className={`lg:col-span-2 p-5 rounded-2xl border shadow-2xs flex flex-col justify-between ${
-            isPastelTheme
-              ? 'bg-white border-[#E2E8F0] text-slate-800'
-              : 'bg-slate-900 border-slate-800 text-slate-100'
-          }`}
-        >
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2 font-['Chakra_Petch',sans-serif]">
-                <BarChart3 className="w-4 h-4 text-blue-600" />
-                สรุปอัตรากำลังแยกตามกองกำกับการ / ฝ่าย / กลุ่มงาน ({subDivisionStats.length} ฝ่าย)
-              </h4>
-            </div>
+        {/* Right: Sub-Division Breakdown (กก./ฝ่าย/กลุ่มงาน) with Animated Light Border */}
+        <div className="lg:col-span-2 relative rounded-2xl p-[2.5px] overflow-hidden shadow-md">
+          {/* Animated Light Beam */}
+          <div
+            className={`absolute -inset-[250%] animate-spin-beam pointer-events-none ${
+              isPastelTheme
+                ? 'bg-[conic-gradient(from_0deg,transparent_0deg,transparent_290deg,rgba(59,130,246,0.3)_320deg,#3b82f6_345deg,#93c5fd_355deg,#2563eb_360deg)] opacity-90'
+                : 'bg-[conic-gradient(from_0deg,transparent_0deg,transparent_290deg,rgba(245,158,11,0.25)_320deg,#F59E0B_340deg,#FFE500_355deg,#FFE500_360deg)] opacity-95'
+            }`}
+          />
+          <div
+            className={`relative z-10 p-5 rounded-[14px] border flex flex-col justify-between ${
+              isPastelTheme
+                ? 'bg-white border-slate-200/90 text-slate-800'
+                : 'bg-slate-900 border-slate-800 text-slate-100'
+            }`}
+          >
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2 font-['Chakra_Petch',sans-serif]">
+                  <BarChart3 className="w-4 h-4 text-blue-600" />
+                  สรุปอัตรากำลังแยกตามกองกำกับการ / ฝ่าย / กลุ่มงาน ({subDivisionStats.length} ฝ่าย)
+                </h4>
+              </div>
 
-            <div className="max-h-96 overflow-y-auto border border-slate-200 rounded-xl overflow-hidden">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-[#F8FAFC] text-slate-700 sticky top-0 border-b border-slate-200 font-['Chakra_Petch',sans-serif] font-bold">
-                  <tr>
-                    <th className="p-2.5">สังกัด บก.</th>
-                    <th className="p-2.5">กองกำกับการ / ฝ่าย</th>
-                    <th className="p-2.5 text-center">อัตราทั้งหมด</th>
-                    <th className="p-2.5 text-center text-emerald-700">ครองตำแหน่ง</th>
-                    <th className="p-2.5 text-center text-amber-700">ตำแหน่งว่าง</th>
-                    <th className="p-2.5 text-right">% บรรจุ</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {subDivisionStats.map((item, idx) => {
-                    const percent = item.total > 0 ? ((item.occupied / item.total) * 100).toFixed(0) : '0';
-                    return (
-                      <tr key={idx} className="hover:bg-blue-50/40 transition-colors">
-                        <td className="p-2.5 text-slate-500 text-[11px] font-medium">
-                          {item.division.replace(' สกพ.', '')}
-                        </td>
-                        <td className="p-2.5 font-semibold text-slate-800">
-                          {item.subDiv}
-                        </td>
-                        <td className="p-2.5 text-center font-mono font-bold text-slate-900 tabular-nums">
-                          {item.total}
-                        </td>
-                        <td className="p-2.5 text-center font-mono text-emerald-700 font-bold tabular-nums">
-                          {item.occupied}
-                        </td>
-                        <td className="p-2.5 text-center font-mono text-amber-700 font-bold tabular-nums">
-                          {item.vacant}
-                        </td>
-                        <td className="p-2.5 text-right font-mono text-slate-600 font-semibold tabular-nums">
-                          {percent}%
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="max-h-96 overflow-y-auto border border-slate-200 rounded-xl overflow-hidden">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead className="bg-[#F8FAFC] text-slate-700 sticky top-0 border-b border-slate-200 font-['Chakra_Petch',sans-serif] font-bold">
+                    <tr>
+                      <th className="p-2.5">สังกัด บก.</th>
+                      <th className="p-2.5">กองกำกับการ / ฝ่าย</th>
+                      <th className="p-2.5 text-center">อัตราทั้งหมด</th>
+                      <th className="p-2.5 text-center text-emerald-700">ครองตำแหน่ง</th>
+                      <th className="p-2.5 text-center text-amber-700">ตำแหน่งว่าง</th>
+                      <th className="p-2.5 text-right">% บรรจุ</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {subDivisionStats.map((item, idx) => {
+                      const percent = item.total > 0 ? ((item.occupied / item.total) * 100).toFixed(0) : '0';
+                      return (
+                        <tr key={idx} className="hover:bg-blue-50/40 transition-colors">
+                          <td className="p-2.5 text-slate-500 text-[11px] font-medium">
+                            {item.division.replace(' สกพ.', '')}
+                          </td>
+                          <td className="p-2.5 font-semibold text-slate-800">
+                            {item.subDiv}
+                          </td>
+                          <td className="p-2.5 text-center font-mono font-bold text-slate-900 tabular-nums">
+                            {item.total}
+                          </td>
+                          <td className="p-2.5 text-center font-mono text-emerald-700 font-bold tabular-nums">
+                            {item.occupied}
+                          </td>
+                          <td className="p-2.5 text-center font-mono text-amber-700 font-bold tabular-nums">
+                            {item.vacant}
+                          </td>
+                          <td className="p-2.5 text-right font-mono text-slate-600 font-semibold tabular-nums">
+                            {percent}%
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

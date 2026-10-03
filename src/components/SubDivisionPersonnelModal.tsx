@@ -269,13 +269,29 @@ export const SubDivisionPersonnelModal: React.FC<SubDivisionPersonnelModalProps>
           </button>
         </div>
 
-        {/* Table Content */}
+        {/* Table Content with Top Edge Running Light */}
         <div className="overflow-y-auto p-4 pt-0 flex-1">
           <div
-            className={`border rounded-2xl overflow-hidden shadow-xs ${
+            className={`border rounded-2xl overflow-hidden shadow-xs relative ${
               currentTheme.isDark ? 'border-slate-800 bg-slate-950/60' : 'border-slate-200 bg-white'
             }`}
           >
+            {/* Top Running Laser Light Beam along table header edge */}
+            <div className="relative h-1.5 w-full overflow-hidden bg-slate-200/50 dark:bg-slate-800/80">
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${
+                  currentTheme.isDark ? 'from-amber-600 via-amber-400 to-amber-600' : 'from-blue-600 via-sky-400 to-blue-600'
+                }`}
+              />
+              <div
+                className={`absolute inset-0 w-1/2 -skew-x-12 animate-stream-light pointer-events-none ${
+                  currentTheme.isDark
+                    ? 'bg-gradient-to-r from-transparent via-[#FFE500] to-transparent shadow-[0_0_12px_#FFE500]'
+                    : 'bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_rgba(255,255,255,0.9)]'
+                }`}
+              />
+            </div>
+
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr

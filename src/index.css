@@ -15,6 +15,40 @@
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes spinBeam {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-beam {
+  animation: spinBeam 6s linear infinite;
+}
+
+.animate-spin-beam-fast {
+  animation: spinBeam 3.5s linear infinite;
+}
+
+@keyframes streamLight {
+  0% {
+    transform: translateX(-150%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.animate-stream-light {
+  animation: streamLight 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-stream-light-fast {
+  animation: streamLight 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 @media print {
   body {
     background: #ffffff !important;
@@ -35,4 +69,5 @@
     color: #0f172a !important;
   }
 }
+
 

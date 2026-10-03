@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PoliceOfficer } from '../types/personnel';
 import { AppTheme } from '../data/themes';
 import { PoliceEmblem } from './PoliceEmblem';
+import { ThaiKanokPattern } from './ThaiKanokPattern';
 import { SubDivisionPersonnelModal } from './SubDivisionPersonnelModal';
 import {
   Shield,
@@ -533,21 +534,34 @@ export const OrgChart: React.FC<OrgChartProps> = ({
         {commander && (
           <div
             onClick={() => onViewOfficer(commander)}
-            className={`group relative p-5 rounded-3xl ${cmdTheme.bg} border-2 ${cmdTheme.border} shadow-xl hover:scale-[1.02] transition-all cursor-pointer overflow-hidden ${
+            className={`group relative p-6 sm:p-7 rounded-3xl ${cmdTheme.bg} border-2 ${cmdTheme.border} shadow-2xl hover:scale-[1.015] transition-all cursor-pointer overflow-hidden ${
               isBatman && isBatSignalActive ? 'ring-2 ring-[#FFE500]/50' : ''
             }`}
           >
+            {/* Exquisite Gold Thai Kanok Ornamental Background Pattern (ลายกนกไทยทองคำ) */}
+            <ThaiKanokPattern
+              className="transition-opacity duration-300 group-hover:opacity-40"
+              opacity={isBatman ? 0.35 : currentTheme.isDark ? 0.45 : 0.35}
+            />
+
+            {/* Subtle Gold Ambient Inner Border */}
+            <div className="absolute inset-1 rounded-[22px] border border-amber-500/25 pointer-events-none" />
+
             {/* Bat-Signal Glow in card */}
             {isBatman && isBatSignalActive && (
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-[#FFE500]/15 rounded-full blur-xl pointer-events-none animate-pulse" />
             )}
 
-            <div className={`text-xs font-bold mb-1.5 ${cmdTheme.subtext}`}>
-              ผู้บัญชาการ สำนักงานกำลังพล (ผบช.สกพ.)
-            </div>
+            <div className="relative z-10">
+              <div className={`text-xs font-bold mb-1.5 uppercase tracking-wider flex items-center justify-center gap-2 ${cmdTheme.subtext}`}>
+                <span className="w-5 h-[1px] bg-gradient-to-r from-transparent to-amber-500/60" />
+                <span>ผู้บัญชาการ สำนักงานกำลังพล (ผบช.สกพ.)</span>
+                <span className="w-5 h-[1px] bg-gradient-to-l from-transparent to-amber-500/60" />
+              </div>
 
-            <div className={`text-xl md:text-2xl font-bold ${cmdTheme.text}`}>
-              {commander.rank} {commander.firstName} {commander.lastName}
+              <div className={`text-xl sm:text-2xl md:text-3xl font-bold font-['Chakra_Petch',sans-serif] tracking-tight drop-shadow-sm ${cmdTheme.text}`}>
+                {commander.rank} {commander.firstName} {commander.lastName}
+              </div>
             </div>
           </div>
         )}
@@ -699,8 +713,20 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                 isBatman && isBatSignalActive ? 'hover:shadow-[0_0_20px_rgba(255,229,0,0.2)]' : ''
               }`}
             >
-              {/* Top Accent Color Bar */}
-              <div className={`h-1.5 w-full bg-gradient-to-r ${divTheme.bar}`} />
+              {/* Top Accent Color Bar with Running Light along Top Edge */}
+              <div className="relative h-2 w-full overflow-hidden bg-black/10 dark:bg-white/10">
+                <div className={`absolute inset-0 bg-gradient-to-r ${divTheme.bar}`} />
+                {/* Running light pulse across the top edge only */}
+                <div
+                  className={`absolute inset-0 w-1/2 -skew-x-12 animate-stream-light pointer-events-none ${
+                    isBatman
+                      ? 'bg-gradient-to-r from-transparent via-[#FFE500] to-transparent shadow-[0_0_14px_#FFE500]'
+                      : currentTheme.isDark
+                      ? 'bg-gradient-to-r from-transparent via-amber-300 to-transparent shadow-[0_0_10px_rgba(245,158,11,0.8)]'
+                      : 'bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_10px_rgba(255,255,255,0.9)]'
+                  }`}
+                />
+              </div>
 
               {/* Division Header */}
               <div className={`p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between ${divTheme.header}`}>
