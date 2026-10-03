@@ -3,6 +3,7 @@ import { PoliceOfficer } from '../types/personnel';
 import { AppTheme } from '../data/themes';
 import { PoliceEmblem } from './PoliceEmblem';
 import { ThaiKanokPattern } from './ThaiKanokPattern';
+import { DiamondSparkleMotto } from './DiamondSparkleMotto';
 import { SubDivisionPersonnelModal } from './SubDivisionPersonnelModal';
 import {
   Shield,
@@ -351,41 +352,77 @@ export const OrgChart: React.FC<OrgChartProps> = ({
         {/* Title & Classification Hierarchy */}
         <div className="flex items-center gap-4">
           <div
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-md border ${
+            className={`w-13 h-13 rounded-2xl flex items-center justify-center shadow-lg border relative overflow-hidden group shrink-0 ${
               isBatman
                 ? 'bg-[#181824] border-[#FFE500]/50 text-[#FFE500]'
                 : currentTheme.isDark
-                ? 'bg-slate-800 border-slate-700 text-amber-400'
-                : 'bg-white border-slate-200 text-blue-700 shadow-xs'
+                ? 'bg-slate-850 border-slate-700 text-amber-400'
+                : 'bg-white border-blue-200 text-blue-700 shadow-sm'
             }`}
           >
-            <Network className="w-6 h-6" />
+            {/* Cyber scanline light reflection */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-transparent opacity-60 pointer-events-none" />
+            <Network className="w-7 h-7 relative z-10 transition-transform duration-300 group-hover:scale-110" />
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-0.5">
-              <span
-                className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+
+          <div className="relative">
+            {/* Futuristic Holographic Ambient Glow */}
+            <div
+              className={`absolute -inset-x-6 -inset-y-2 rounded-2xl blur-xl pointer-events-none opacity-40 transition-all ${
+                isBatman
+                  ? 'bg-gradient-to-r from-[#FFE500]/25 via-amber-400/20 to-transparent'
+                  : currentTheme.isDark
+                  ? 'bg-gradient-to-r from-amber-500/20 via-blue-500/20 to-indigo-500/20'
+                  : 'bg-gradient-to-r from-blue-400/25 via-sky-300/25 to-indigo-400/20'
+              }`}
+            />
+
+            {/* Futuristic High-Tech Title Typography with Cyber HUD Pill */}
+            <div className="relative flex flex-wrap items-center gap-2 sm:gap-3">
+              <h2
+                className={`text-2xl sm:text-3xl md:text-4xl font-black font-['Chakra_Petch',sans-serif] tracking-tight transition-all select-none ${
                   isBatman
-                    ? 'bg-[#FFE500]/15 text-[#FFE500] border-[#FFE500]/40'
+                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#FFE500] via-[#FFFBEB] to-[#EAB308] animate-cyber-shimmer animate-cyber-glow-gold'
                     : currentTheme.isDark
-                    ? 'bg-amber-950/60 text-amber-300 border-amber-800/80'
-                    : 'bg-blue-50 text-blue-700 border-blue-200'
+                    ? 'text-slate-100'
+                    : 'text-black'
                 }`}
               >
-                แผนผังโครงสร้างสายการบังคับบัญชา
-              </span>
+                สำนักงานกำลังพล
+              </h2>
+
+              {/* Cybernetic HUD Capsule Badge for (สกพ.) */}
+              <div
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs sm:text-sm font-black font-mono tracking-widest border shadow-xs relative overflow-hidden backdrop-blur-md ${
+                  isBatman
+                    ? 'bg-[#151520]/90 border-[#FFE500]/60 text-[#FFE500] shadow-[0_0_15px_rgba(255,229,0,0.3)]'
+                    : currentTheme.isDark
+                    ? 'bg-slate-900/90 border-amber-500/40 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                    : 'bg-blue-50/90 border-blue-300 text-blue-700 shadow-xs'
+                }`}
+              >
+                {/* Cyber Pulse Indicator Dot */}
+                <span className="relative flex h-2 w-2">
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                      isBatman ? 'bg-[#FFE500]' : currentTheme.isDark ? 'bg-amber-400' : 'bg-blue-600'
+                    }`}
+                  />
+                  <span
+                    className={`relative inline-flex rounded-full h-2 w-2 ${
+                      isBatman ? 'bg-[#FFE500]' : currentTheme.isDark ? 'bg-amber-400' : 'bg-blue-600'
+                    }`}
+                  />
+                </span>
+                <span>สกพ.</span>
+              </div>
             </div>
-            <h2
-              className={`text-2xl sm:text-3xl font-black font-['Chakra_Petch',sans-serif] tracking-tight ${
-                isBatman
-                  ? 'text-[#FFE500] drop-shadow-[0_2px_10px_rgba(255,229,0,0.35)]'
-                  : currentTheme.textMain
-              }`}
-            >
-              สำนักงานกำลังพล (สกพ.)
-            </h2>
-            <div className={`text-xs sm:text-sm font-semibold tracking-wide flex flex-wrap items-center gap-2 mt-1.5 ${isBatman ? 'text-slate-300' : currentTheme.textMuted}`}>
-              <span className="font-bold">สำนักงานตำรวจแห่งชาติ</span>
+
+            <div className={`text-xs sm:text-sm font-semibold tracking-wide flex flex-wrap items-center gap-2 mt-2 ${isBatman ? 'text-slate-300' : currentTheme.textMuted}`}>
+              <span className="font-bold flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                สำนักงานตำรวจแห่งชาติ
+              </span>
               <span className="opacity-40">•</span>
               <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-slate-500/10 border border-slate-500/20 font-bold">
                 รวม {officers.length} อัตรา
@@ -582,6 +619,11 @@ export const OrgChart: React.FC<OrgChartProps> = ({
 
               <div className={`text-xl sm:text-2xl md:text-3xl font-bold font-['Chakra_Petch',sans-serif] tracking-tight drop-shadow-sm ${cmdTheme.text}`}>
                 {commander.rank} {commander.firstName} {commander.lastName}
+              </div>
+
+              {/* Commander Motto with Diamond Sparkle Chasing Character by Character */}
+              <div className="mt-3 pt-3 border-t border-amber-500/25 w-full max-w-2xl mx-auto flex justify-center">
+                <DiamondSparkleMotto isBatman={isBatman} isDark={currentTheme.isDark} />
               </div>
             </div>
           </div>

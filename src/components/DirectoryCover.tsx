@@ -1,5 +1,6 @@
 import React from 'react';
 import { PoliceEmblem } from './PoliceEmblem';
+import { DiamondSparkleMotto } from './DiamondSparkleMotto';
 import { PoliceOfficer } from '../types/personnel';
 import { AppTheme } from '../data/themes';
 import {
@@ -200,15 +201,33 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
             </h1>
 
             <div className="flex items-center justify-center gap-3 pt-1">
-              <span className={`h-0.5 w-14 ${isBatman ? 'bg-[#FFE500]' : 'bg-amber-500'}`} />
-              <h2
-                className={`text-2xl sm:text-3xl font-bold font-['Chakra_Petch',sans-serif] ${
-                  isBatman ? 'text-slate-100' : isDark ? 'text-amber-300' : 'text-[#854D0E]'
-                }`}
-              >
-                สำนักงานกำลังพล (สกพ.)
-              </h2>
-              <span className={`h-0.5 w-14 ${isBatman ? 'bg-[#FFE500]' : 'bg-amber-500'}`} />
+              <span className={`h-0.5 w-12 sm:w-16 bg-gradient-to-r from-transparent ${isBatman ? 'to-[#FFE500]' : isDark ? 'to-amber-500' : 'to-blue-600'}`} />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <h2
+                  className={`text-2xl sm:text-3xl font-black font-['Chakra_Petch',sans-serif] tracking-tight ${
+                    isBatman
+                      ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#FFE500] via-[#FFFBEB] to-[#EAB308] animate-cyber-shimmer animate-cyber-glow-gold'
+                      : isDark
+                      ? 'text-slate-100'
+                      : 'text-black'
+                  }`}
+                >
+                  สำนักงานกำลังพล
+                </h2>
+                <span
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs sm:text-sm font-black font-mono tracking-widest border shadow-xs ${
+                    isBatman
+                      ? 'bg-[#151520] border-[#FFE500]/60 text-[#FFE500]'
+                      : isDark
+                      ? 'bg-amber-950/60 border-amber-500/40 text-amber-300'
+                      : 'bg-amber-50 border-amber-300 text-amber-800'
+                  }`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full animate-ping ${isBatman ? 'bg-[#FFE500]' : isDark ? 'bg-amber-400' : 'bg-amber-600'}`} />
+                  สกพ.
+                </span>
+              </div>
+              <span className={`h-0.5 w-12 sm:w-16 bg-gradient-to-l from-transparent ${isBatman ? 'to-[#FFE500]' : isDark ? 'to-amber-500' : 'to-blue-600'}`} />
             </div>
 
             <p className={`text-base sm:text-lg font-semibold tracking-wide ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -255,7 +274,13 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
               >
                 {commander.rank} {commander.firstName} {commander.lastName}
               </div>
-              <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+
+              {/* Commander Motto with Diamond Sparkle Chasing Character by Character */}
+              <div className="mt-3 pt-3 border-t border-amber-500/25 w-full max-w-2xl mx-auto flex justify-center">
+                <DiamondSparkleMotto isBatman={isBatman} isDark={isDark} />
+              </div>
+
+              <p className={`text-xs mt-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 ผู้บังคับบัญชาสูงสุด สำนักงานกำลังพล สำนักงานตำรวจแห่งชาติ
               </p>
             </div>
@@ -449,7 +474,7 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
             </div>
             <div>
               <h3 className={`text-base font-bold font-['Chakra_Petch',sans-serif] ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
-                เปิดดูแผนผังโครงสร้างสายบังคับบัญชา
+                เปิดดูแผนผังโครงสร้างองค์กร (สกพ.)
               </h3>
               <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 คลิกเพื่อดูผังองค์กรแบบ Interactive Tree View และจัดสรรกำลังพล
