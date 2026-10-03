@@ -206,7 +206,7 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
                 <h2
                   className={`text-2xl sm:text-3xl font-black font-['Chakra_Petch',sans-serif] tracking-tight ${
                     isBatman
-                      ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#FFE500] via-[#FFFBEB] to-[#EAB308] animate-cyber-shimmer animate-cyber-glow-gold'
+                      ? 'text-[#FFE500]'
                       : isDark
                       ? 'text-slate-100'
                       : 'text-black'

@@ -382,7 +382,7 @@ export const OrgChart: React.FC<OrgChartProps> = ({
               <h2
                 className={`text-2xl sm:text-3xl md:text-4xl font-black font-['Chakra_Petch',sans-serif] tracking-tight transition-all select-none ${
                   isBatman
-                    ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#FFE500] via-[#FFFBEB] to-[#EAB308] animate-cyber-shimmer animate-cyber-glow-gold'
+                    ? 'text-[#FFE500]'
                     : currentTheme.isDark
                     ? 'text-slate-100'
                     : 'text-black'
