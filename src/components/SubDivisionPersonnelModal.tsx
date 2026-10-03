@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PoliceOfficer } from '../types/personnel';
 import { AppTheme } from '../data/themes';
 import { PoliceEmblem } from './PoliceEmblem';
+import { ThaiKanokPattern } from './ThaiKanokPattern';
 import * as XLSX from 'xlsx';
 import {
   X,
@@ -115,13 +116,28 @@ export const SubDivisionPersonnelModal: React.FC<SubDivisionPersonnelModalProps>
             : 'bg-white border-slate-200 text-slate-800'
         }`}
       >
-        {/* Header Ribbon */}
+        {/* Header Ribbon with Exquisite Thai Kanok Background */}
         <div
-          className={`p-5 border-b flex flex-wrap items-center justify-between gap-3 ${
-            currentTheme.isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-[#F8FAFC] border-slate-200'
+          className={`relative p-5 border-b flex flex-wrap items-center justify-between gap-3 overflow-hidden ${
+            currentTheme.isDark ? 'bg-slate-950/90 border-slate-800' : 'bg-[#F8FAFC] border-slate-200'
           }`}
         >
-          <div className="flex items-center gap-3">
+          {/* Thai Kanok Pattern inside Modal Header */}
+          <ThaiKanokPattern
+            variant="deputies"
+            tone={
+              divisionId === 'กองอัตรากำลัง สกพ.'
+                ? 'emerald'
+                : divisionId === 'กองทะเบียนพล สกพ.'
+                ? 'sapphire'
+                : divisionId === 'กองสวัสดิการ สกพ.'
+                ? 'ruby'
+                : 'gold'
+            }
+            opacity={currentTheme.isDark ? 0.4 : 0.25}
+          />
+
+          <div className="flex items-center gap-3 relative z-10">
             <div
               className={`w-11 h-11 rounded-2xl flex items-center justify-center shadow-xs border ${
                 currentTheme.isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'

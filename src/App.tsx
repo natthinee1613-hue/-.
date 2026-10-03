@@ -31,7 +31,8 @@ import {
   Palette,
   Sparkles,
   Globe,
-  Radio
+  Radio,
+  ExternalLink
 } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'police_directory_officers_v3';
@@ -351,6 +352,41 @@ export default function App() {
               <BarChart3 className="w-3.5 h-3.5" />
               แยกย่อยองค์ประกอบ
             </button>
+
+            {/* Official Police Websites Quick Links */}
+            <div className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-1 hidden lg:block" />
+
+            <a
+              href="https://human.police.go.th/home/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition-all hover:scale-102 ${
+                currentTheme.isDark
+                  ? 'border-blue-500/30 bg-blue-950/30 text-blue-300 hover:bg-blue-900/40 hover:border-blue-400'
+                  : 'border-blue-200 bg-blue-50/70 text-blue-700 hover:bg-blue-100 hover:border-blue-300'
+              }`}
+              title="เข้าสู่เว็บไซต์ทางการ สำนักงานกำลังพล (human.police.go.th)"
+            >
+              <Globe className="w-3.5 h-3.5 text-blue-500" />
+              <span>เว็บ สกพ.</span>
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </a>
+
+            <a
+              href="https://royalthaipolice.go.th/th/main"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition-all hover:scale-102 ${
+                currentTheme.isDark
+                  ? 'border-amber-500/30 bg-amber-950/30 text-amber-300 hover:bg-amber-900/40 hover:border-amber-400'
+                  : 'border-amber-200 bg-amber-50/70 text-amber-800 hover:bg-amber-100 hover:border-amber-300'
+              }`}
+              title="เข้าสู่เว็บไซต์ทางการ สำนักงานตำรวจแห่งชาติ (royalthaipolice.go.th)"
+            >
+              <Shield className="w-3.5 h-3.5 text-amber-500" />
+              <span>เว็บ ตร.</span>
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </a>
           </nav>
 
           {/* Zone 3: Primary Action buttons & Theme Switcher */}
@@ -482,6 +518,28 @@ export default function App() {
             <Globe className="w-3 h-3" />
             {isPublishing ? 'เผยแพร่...' : `เผยแพร่ (${officers.length})`}
           </button>
+
+          <a
+            href="https://human.police.go.th/home/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-2.5 py-1 rounded-lg whitespace-nowrap font-medium text-blue-600 dark:text-blue-400 bg-blue-500/10 border border-blue-500/20 flex items-center gap-1"
+            title="เข้าสู่เว็บไซต์ทางการ สำนักงานกำลังพล"
+          >
+            <span>เว็บ สกพ.</span>
+            <ExternalLink className="w-2.5 h-2.5" />
+          </a>
+
+          <a
+            href="https://royalthaipolice.go.th/th/main"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-2.5 py-1 rounded-lg whitespace-nowrap font-medium text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 flex items-center gap-1"
+            title="เข้าสู่เว็บไซต์ทางการ สำนักงานตำรวจแห่งชาติ"
+          >
+            <span>เว็บ ตร.</span>
+            <ExternalLink className="w-2.5 h-2.5" />
+          </a>
         </div>
       </header>
 
@@ -647,14 +705,36 @@ export default function App() {
             : 'bg-white border-slate-200 text-slate-500'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
             <span className={`font-semibold ${currentTheme.textMain}`}>
               ทำเนียบกำลังพล สำนักงานกำลังพล สำนักงานตำรวจแห่งชาติ (สกพ.)
             </span>
-          </div>
-          <div>
+            <span className="hidden sm:inline opacity-40">•</span>
             <span>ประจำปีงบประมาณ พ.ศ. ๒๕๖๙ · ธีม: {currentTheme.name}</span>
+          </div>
+
+          {/* Official Police Portals Quick Links */}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="text-[11px] opacity-75 hidden md:inline">ลิงก์เว็บไซต์ทางการ:</span>
+            <a
+              href="https://human.police.go.th/home/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 transition-all cursor-pointer"
+            >
+              <span>สำนักงานกำลังพล (สกพ.)</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <a
+              href="https://royalthaipolice.go.th/th/main"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-all cursor-pointer"
+            >
+              <span>สำนักงานตำรวจแห่งชาติ (ตร.)</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </div>
         </div>
       </footer>

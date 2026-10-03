@@ -20,7 +20,8 @@ import {
   FileCheck,
   HeartHandshake,
   Landmark,
-  Scale
+  Scale,
+  Globe
 } from 'lucide-react';
 
 interface DirectoryCoverProps {
@@ -482,6 +483,87 @@ export const DirectoryCover: React.FC<DirectoryCoverProps> = ({
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-slate-400 group-hover:translate-x-1 transition-transform" />
+        </div>
+      </div>
+
+      {/* Official Government & Royal Thai Police Portals */}
+      <div className="max-w-[900px] mx-auto print:hidden">
+        <div
+          className={`p-5 sm:p-6 rounded-3xl border-2 transition-all shadow-md ${
+            isDark
+              ? 'bg-[#111117] border-slate-800'
+              : 'bg-white border-slate-200'
+          }`}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${isBatman ? 'bg-[#FFE500]/15 text-[#FFE500]' : 'bg-blue-500/10 text-blue-600'}`}>
+                <Globe className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className={`font-bold text-sm font-['Chakra_Petch',sans-serif] ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+                  ลิงก์เว็บไซต์ทางการที่เกี่ยวข้อง (Official Police Portals)
+                </h3>
+                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                  เชื่อมต่อไปยังเว็บไซต์หลักของหน่วยงานและสำนักงานตำรวจแห่งชาติ
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <a
+              href="https://human.police.go.th/home/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`p-4 rounded-2xl border transition-all flex items-center justify-between group hover:scale-[1.01] ${
+                isDark
+                  ? 'bg-slate-900/80 border-slate-800 hover:border-blue-400 hover:bg-slate-850'
+                  : 'bg-blue-50/50 border-blue-200 hover:border-blue-400 hover:bg-blue-50'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                  สกพ.
+                </div>
+                <div>
+                  <h4 className={`text-xs font-bold ${isDark ? 'text-slate-200' : 'text-slate-800'} group-hover:text-blue-600 transition-colors`}>
+                    สำนักงานกำลังพล (สกพ.)
+                  </h4>
+                  <span className="text-[11px] text-slate-400 font-mono block">
+                    human.police.go.th
+                  </span>
+                </div>
+              </div>
+              <ExternalLink className="w-4 h-4 text-blue-500 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+
+            <a
+              href="https://royalthaipolice.go.th/th/main"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`p-4 rounded-2xl border transition-all flex items-center justify-between group hover:scale-[1.01] ${
+                isDark
+                  ? 'bg-slate-900/80 border-slate-800 hover:border-amber-400 hover:bg-slate-850'
+                  : 'bg-amber-50/50 border-amber-200 hover:border-amber-400 hover:bg-amber-50'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                  ตร.
+                </div>
+                <div>
+                  <h4 className={`text-xs font-bold ${isDark ? 'text-slate-200' : 'text-slate-800'} group-hover:text-amber-600 transition-colors`}>
+                    สำนักงานตำรวจแห่งชาติ
+                  </h4>
+                  <span className="text-[11px] text-slate-400 font-mono block">
+                    royalthaipolice.go.th
+                  </span>
+                </div>
+              </div>
+              <ExternalLink className="w-4 h-4 text-amber-500 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+          </div>
         </div>
       </div>
     </div>

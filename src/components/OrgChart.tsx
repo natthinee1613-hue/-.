@@ -384,12 +384,33 @@ export const OrgChart: React.FC<OrgChartProps> = ({
             >
               สำนักงานกำลังพล (สกพ.)
             </h2>
-            <div className={`text-xs sm:text-sm font-semibold tracking-wide flex flex-wrap items-center gap-2 mt-1 ${isBatman ? 'text-slate-300' : currentTheme.textMuted}`}>
+            <div className={`text-xs sm:text-sm font-semibold tracking-wide flex flex-wrap items-center gap-2 mt-1.5 ${isBatman ? 'text-slate-300' : currentTheme.textMuted}`}>
               <span className="font-bold">สำนักงานตำรวจแห่งชาติ</span>
               <span className="opacity-40">•</span>
               <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-slate-500/10 border border-slate-500/20 font-bold">
                 รวม {officers.length} อัตรา
               </span>
+              <span className="opacity-40 hidden sm:inline">•</span>
+              <a
+                href="https://human.police.go.th/home/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 border border-blue-500/30 transition-all font-semibold"
+                title="เข้าสู่เว็บไซต์ทางการ สำนักงานกำลังพล (human.police.go.th)"
+              >
+                <span>เว็บ สกพ.</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <a
+                href="https://royalthaipolice.go.th/th/main"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 transition-all font-semibold"
+                title="เข้าสู่เว็บไซต์ทางการ สำนักงานตำรวจแห่งชาติ (royalthaipolice.go.th)"
+              >
+                <span>เว็บ ตร.</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
           </div>
         </div>

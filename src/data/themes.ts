@@ -51,7 +51,82 @@ export interface AppTheme {
 }
 
 export const THEMES: AppTheme[] = [
-  // 1. แบทแมน / ดาร์กไนท์แห่งก็อตแธม (Batman The Dark Knight)
+  // 1. ไทยกนกวิจิตรทองคำหลวง (Royal Thai Golden Kanok) - ลวดลายกนกไทยวิจิตร
+  {
+    id: 'thai-kanok-royal',
+    name: 'ไทยกนกวิจิตรทองคำหลวง',
+    englishName: 'Royal Thai Golden Kanok',
+    description: 'โทนลายกนกไทยทองคำแท้ ๒๔K เปลวทองคำสุกสว่าง ตัดกับสีกรมท่าเข้มและมุกทอง วิจิตรงดงามสมเกียรติยศสูงสุด',
+    isDark: true,
+    swatches: ['#0A0E17', '#1E293B', '#D97706', '#F59E0B', '#FFE066'],
+    bgApp: 'bg-[#060911]',
+    textMain: 'text-[#FFFBEB]',
+    textMuted: 'text-[#E5C158]',
+    headerBg: 'bg-[#0A0E1A]/95',
+    headerBorder: 'border-[#B45309]/50',
+    navActive: 'bg-gradient-to-r from-[#F59E0B] via-[#FFE066] to-[#D97706] text-slate-950 font-black border-[#FFE066] shadow-[0_0_18px_rgba(245,158,11,0.45)]',
+    navInactive: 'text-[#FDE68A] hover:text-[#FFFBEB] hover:bg-[#151D2F]',
+    cardBg: 'bg-[#0D1322]',
+    cardBorder: 'border-[#B45309]/40',
+    inputBg: 'bg-[#090D18]',
+    inputBorder: 'border-[#B45309]/50 focus:border-[#F59E0B]',
+    tableHeaderBg: 'bg-[#121A2D]',
+    tableBorder: 'border-[#B45309]/30',
+    tableRowHover: 'hover:bg-[#18233C]',
+    vacantRowBg: 'bg-[#F59E0B]/10',
+    orgChart: {
+      commander: {
+        bg: 'bg-gradient-to-b from-[#1E2638] via-[#111728] to-[#0A0E18]',
+        border: 'border-[#F59E0B] shadow-[0_0_35px_rgba(245,158,11,0.35)]',
+        text: 'text-[#FFE873] drop-shadow-[0_2px_14px_rgba(245,158,11,0.5)]',
+        subtext: 'text-[#FDE68A]',
+        badge: 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-slate-950 font-black border-[#FFE066]',
+      },
+      deputiesBg: 'bg-gradient-to-r from-[#0E1526] via-[#182238] to-[#0E1526]',
+      deputiesBorder: 'border-[#B45309]/60',
+      deputiesText: 'text-[#FDE68A]',
+      divisions: {
+        'สกพ.': {
+          bg: 'bg-[#0B101E]',
+          header: 'bg-gradient-to-r from-[#2A1E0E] to-[#121A2D]',
+          border: 'border-[#F59E0B]/70 hover:border-[#FFE066]',
+          text: 'text-[#FFE066]',
+          badge: 'bg-[#F59E0B]/20 text-[#FFE066] border-[#F59E0B]/50',
+          subItem: 'bg-[#131B2F]/90 hover:bg-[#1E2B4A] border-[#B45309]/40 text-[#FFFBEB]',
+          bar: 'from-[#FFE066] via-[#F59E0B] to-[#B45309]',
+        },
+        'กองอัตรากำลัง สกพ.': {
+          bg: 'bg-[#081515]',
+          header: 'bg-gradient-to-r from-[#0D281E] to-[#0A1A24]',
+          border: 'border-[#10B981]/70 hover:border-[#34D399]',
+          text: 'text-[#34D399]',
+          badge: 'bg-[#10B981]/20 text-[#6EE7B7] border-[#10B981]/50',
+          subItem: 'bg-[#0F2323]/90 hover:bg-[#143333] border-[#047857]/40 text-[#ECFDF5]',
+          bar: 'from-[#6EE7B7] via-[#10B981] to-[#065F46]',
+        },
+        'กองทะเบียนพล สกพ.': {
+          bg: 'bg-[#0A1324]',
+          header: 'bg-gradient-to-r from-[#0F223D] to-[#0D182E]',
+          border: 'border-[#38BDF8]/70 hover:border-[#7DD3FC]',
+          text: 'text-[#7DD3FC]',
+          badge: 'bg-[#0284C7]/20 text-[#7DD3FC] border-[#0284C7]/50',
+          subItem: 'bg-[#121E36]/90 hover:bg-[#1A2C4F] border-[#0369A1]/40 text-[#F0F9FF]',
+          bar: 'from-[#7DD3FC] via-[#0284C7] to-[#075985]',
+        },
+        'กองสวัสดิการ สกพ.': {
+          bg: 'bg-[#170A14]',
+          header: 'bg-gradient-to-r from-[#330F24] to-[#1C0D1B]',
+          border: 'border-[#F43F5E]/70 hover:border-[#FDA4AF]',
+          text: 'text-[#FDA4AF]',
+          badge: 'bg-[#E11D48]/20 text-[#FDA4AF] border-[#E11D48]/50',
+          subItem: 'bg-[#220F1E]/90 hover:bg-[#36162E] border-[#9F1239]/40 text-[#FFF1F2]',
+          bar: 'from-[#FDA4AF] via-[#E11D48] to-[#9F1239]',
+        },
+      },
+    },
+  },
+
+  // 2. แบทแมน / ดาร์กไนท์แห่งก็อตแธม (Batman The Dark Knight)
   {
     id: 'batman-dark-knight',
     name: 'แบทแมน อัศวินรัตติกาล (Batman)',
